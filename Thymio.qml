@@ -5,6 +5,7 @@ import Simulator 1.0
 Item {
 	property var variables: ({})
 	property var events: ({})
+    property var userTask: ({})
 	property string source: ""
 	property string error: ""
 
@@ -43,7 +44,7 @@ Item {
 
 	function setProgram() {
 		// TODO: put simulation in a thread
-		simulator.setProgram(events, source);
+        simulator.testProgram(userTask, events, source);
 		if (node) {
 			error = node.setProgram(events, source);
 		}
