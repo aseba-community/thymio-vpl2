@@ -4,8 +4,7 @@ import Simulator 1.0
 
 Item {
 	property var variables: ({})
-	property var events: ({})
-    property var userTask: ({})
+    property var events: ({})
 	property string source: ""
 	property string error: ""
 
@@ -17,6 +16,10 @@ Item {
 			}
 		}
 	}
+
+    Loader {
+        id: userTaskLoader
+    }
 
 	Simulator {
 		id: simulator
@@ -44,7 +47,8 @@ Item {
 
 	function setProgram() {
 		// TODO: put simulation in a thread
-        simulator.testProgram(userTask, events, source);
+        userTaskLoader.source = "simulationElements/UserTask.qml"
+        simulator.testProgram(userTaskLoader, events, source);
 		if (node) {
 			error = node.setProgram(events, source);
 		}

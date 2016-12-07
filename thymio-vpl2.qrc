@@ -146,5 +146,16 @@
         <file>blocks/images/MotorSimpleActionBlock/mini-right.svg</file>
         <file>blocks/images/MotorSimpleActionBlock/mini-stop.svg</file>
         <file>blocks/images/MotorSimpleActionBlock/mini.svg</file>
+        <file>simulationElements/Wall.qml</file>
+        <file>aseba.cpp</file>
+        <file>aseba.h</file>
+        <file>main.cpp</file>
+        <file>simulator.cpp</file>
+        <file>simulator.h</file>
+        <file>thymio-vpl2.cpp</file>
+        <file>thymio-vpl2.h</file>
+        <file>simulationElements/UserTask.qml</file>
+        <file>simulationElements/Scenario.qml</file>
+        <file>simulationElements/UnitTest.qml</file>
     </qresource>
 </RCC>
