@@ -4,12 +4,12 @@ Item {
     property string name
 
     property int simTime
-    property vector3d initialPosition
+    property var initialPosition
 
-    property vector2d worldSize
+    property var worldSize
     property list<Wall> walls
 
     property string evaluationMetric
-    property list<QVector2D> tiles
-    property list<int> tileScores
+    property var tiles: []
+    property var tileScores: []
 }

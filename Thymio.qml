@@ -17,8 +17,8 @@ Item {
 		}
 	}
 
-    Loader {
-        id: userTaskLoader
+    UserTask {
+        id: userTask
     }
 
 	Simulator {
@@ -46,9 +46,8 @@ Item {
 	}
 
 	function setProgram() {
-		// TODO: put simulation in a thread
-        userTaskLoader.source = "simulationElements/UserTask.qml"
-        simulator.testProgram(userTaskLoader, events, source);
+        // TODO: put simulation in a thread
+        simulator.testProgram(userTask, events, source);
 		if (node) {
 			error = node.setProgram(events, source);
 		}

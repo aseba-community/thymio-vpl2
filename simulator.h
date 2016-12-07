@@ -51,7 +51,7 @@ class Simulator: public QObject {
     };
 
 public slots:
-    QString testProgram(QVariantList userTask, QVariantMap events, QString source);
+    QString testProgram(QVariantMap userTask, QVariantMap events, QString source);
     //QString testProgram();
     //void SetProgram(QVariantMap events, QString source);
     //void setUserTask(QVariantMap userTask);

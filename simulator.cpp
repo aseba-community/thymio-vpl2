@@ -30,9 +30,9 @@ struct SimulatorNodesManager: NodesManager
 	}
 };
 
-QString Simulator::testProgram(QVariantList newUserTask, QVariantMap events, QString source) {
+QString Simulator::testProgram(QVariantMap newUserTask, QVariantMap events, QString source) {
 
-    qInfo() << "userTask : " << newUserTask;
+    qInfo() << "userTask : " << newUserTask.empty();
     qInfo() << "events   : " << events;
     qInfo() << "source   : " << source;
 
