@@ -1,6 +1,8 @@
 #ifndef SIMULATOR_H
 #define SIMULATOR_H
 
+#include <enki/enki/PhysicalEngine.h>
+
 #include <QVariantMap>
 #include <QVector>
 #include <QVector2D>
@@ -11,50 +13,47 @@ class Simulator: public QObject {
 
     // Sub struct
     struct Program {
-        Program() : events(), source() {}
-
         QVariantMap events;
         QString source;
     };
 
-    struct Wall {
-        Wall() : position(0,0), size(0,0,0), color(16,16,16) {}
-
-        QVector2D position;
-        QVector3D size;
-        QVector3D color;
-    };
     struct Scenario {
-        Scenario() : name("newScenario"), simTime(0), initialPosition(20,20,0),
-                     worldSize(40,40), walls(NULL), evaluationMetric("noMetric") {}
+        Scenario() : name("newScenario"), simTime(0), initialPosition(20,20,0), worldSize(20,20), evaluationMetric("none") {}
 
         QString name;
         int simTime;
         QVector3D initialPosition;
 
         QVector2D worldSize;
-        QVector<Wall> walls;
+        QVector<Enki::PhysicalObject> walls;
+
         QString evaluationMetric;
         QVector<QVector2D> tiles;
         QVector<int> tileScores;
     };
     struct UnitTest {
-        UnitTest() : scenarios(NULL), combinationRule("mean") {}
+        UnitTest() : name("newUnitTest"), scenarios(NULL), combinationRule("none") {}
 
+        QString name;
         QVector<Scenario> scenarios;
         QString combinationRule;
     };
     struct UserTask {
         UserTask() : unitTests(NULL) {}
 
+        QString name;
         QVector<UnitTest> unitTests;
     };
 
 public slots:
-    QString testProgram(QVariantMap userTask, QVariantMap events, QString source);
+    // Update the userTask, events and source in the simulator and run the simulation
+    QString testProgram(QVariant userTask, QVariantMap newEvents, QString newSource);
+    // run the simulation
     //QString testProgram();
-    //void SetProgram(QVariantMap events, QString source);
-    //void setUserTask(QVariantMap userTask);
+    // Update program information in the simulator (events and source)
+    //void setProgram(QVariantMap newEvents, QString newSource);
+    // Update the userTask in the simulator
+    void setUserTask(QVariant newUserTask);
 
 private:
     Program program;
