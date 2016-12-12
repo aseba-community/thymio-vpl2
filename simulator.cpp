@@ -133,108 +133,115 @@ void Simulator::setUserTask(QVariant newUserTask) {
     }
     */
 }
-/*
+
 void Simulator::setProgram(QVariantMap newEvents, QString newSource) {
 
     // Update program member
     program.events = newEvents;
     program.source = newSource;
+
+    // Update byteCode
+    program.bytecode.clear();
 }
-*/
-QString Simulator::testProgram(QVariant newUserTask, QVariantMap events, QString source) {
 
+QString Simulator::testProgram(QVariant newUserTask, QVariantMap newEvents, QString newSource) {
     setUserTask(newUserTask);
+    setProgram(newEvents, newSource);
+    return testProgram();
+}
 
-    //qInfo() << "events   : " << events;
-    //qInfo() << "source   : " << source;
+QString Simulator::testProgram() {
+    // Parameters
+    const double dt(0.03);
+    qDebug() << program.events;
+    qDebug() << program.source;
 
-	// parameters
-	const double dt(0.03);
+    // create world, robot and nodes manager
+    World world(40,40);
+    DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
+    thymio->pos = {10, 10};
+    world.addObject(thymio);
+    SimulatorNodesManager SimulatorNodesManager(thymio);
 
-	// create world, robot and nodes manager
-    World world(40,20);
+    // list the nodes and step, the robot should send its description to the nodes manager
+    thymio->inQueue.emplace(ListNodes().clone());
 
-	DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
-	thymio->pos = {10, 10};
-	world.addObject(thymio);
+    // we define a step lambda
+    auto step = [&]() {
+        world.step(dt);
+        SimulatorNodesManager.step();
+        qInfo() << "- stepped, robot pos:" << thymio->pos.x << thymio->pos.y;
+    };
 
-	SimulatorNodesManager SimulatorNodesManager(thymio);
+    // step twice for the detection and enumeration round-trip
+    step();
+    step();
 
-	// list the nodes and step, the robot should send its description to the nodes manager
-	thymio->inQueue.emplace(ListNodes().clone());
+    // check that the nodes manager has received the description from the robot
+    bool ok(false);
+    unsigned nodeId(SimulatorNodesManager.getNodeId(L"thymio-II", 0, &ok));
+    if (!ok) {
+        qCritical() << "nodes manager did not find \"thymio-II\"";
+        return "";
+    }
+    if (nodeId != 1) {
+        qCritical() << "nodes manager did not return the right nodeId for \"thymio-II\", should be 1, was " << nodeId;
+        return "";
+    }
 
-	// we define a step lambda
-	auto step = [&]()
-	{
-		world.step(dt);
-		SimulatorNodesManager.step();
-		//qInfo() << "- stepped, robot pos:" << thymio->pos.x << thymio->pos.y;
-	};
+    const TargetDescription *targetDescription(SimulatorNodesManager.getDescription(nodeId));
+    if (!targetDescription) {
+        qCritical() << "nodes manager did not return a target description for \"thymio-II\"";
+        return "";
+    }
 
-	// step twice for the detection and enumeration round-trip
-	step();
-	step();
+    // compile a small code
+    Compiler compiler;
+    CommonDefinitions commonDefinitions(AsebaNode::commonDefinitionsFromEvents(program.events));
+    compiler.setTargetDescription(targetDescription);
+    compiler.setCommonDefinitions(&commonDefinitions);
+    std::wistringstream input(program.source.toStdWString());
+    BytecodeVector bytecode;
+    unsigned allocatedVariablesCount;
+    Error error;
+    const bool compilationResult(compiler.compile(input, bytecode, allocatedVariablesCount, error));
+    if (!compilationResult) {
+        qWarning() << "compilation error: " << QString::fromStdWString(error.toWString());
+        qWarning() << program.source;
+        return QString::fromStdWString(error.message);
+    }
+    else {
+        qDebug() << "compilation ok";
+    }
 
-	// check that the nodes manager has received the description from the robot
-	bool ok(false);
-	unsigned nodeId(SimulatorNodesManager.getNodeId(L"thymio-II", 0, &ok));
-	if (!ok)
-	{
-		qCritical() << "nodes manager did not find \"thymio-II\"";
-		return "";
-	}
-	if (nodeId != 1)
-	{
-		qCritical() << "nodes manager did not return the right nodeId for \"thymio-II\", should be 1, was " << nodeId;
-		return "";
-	}
-	const TargetDescription *targetDescription(SimulatorNodesManager.getDescription(nodeId));
-	if (!targetDescription)
-	{
-		qCritical() << "nodes manager did not return a target description for \"thymio-II\"";
-		return "";
-	}
+    // fill the bytecode messages
+    vector<Message*> setBytecodeMessages;
+    sendBytecode(setBytecodeMessages, nodeId, vector<uint16>(bytecode.begin(), bytecode.end()));
+    for_each(setBytecodeMessages.begin(), setBytecodeMessages.end(), [=](Message* message){ thymio->inQueue.emplace(message); });
 
-	// compile a small code
-	Compiler compiler;
-	CommonDefinitions commonDefinitions(AsebaNode::commonDefinitionsFromEvents(events));
-	compiler.setTargetDescription(targetDescription);
-	compiler.setCommonDefinitions(&commonDefinitions);
-	std::wistringstream input(source.toStdWString());
-	BytecodeVector bytecode;
-	unsigned allocatedVariablesCount;
-	Error error;
-	const bool compilationResult(compiler.compile(input, bytecode, allocatedVariablesCount, error));
-	if (!compilationResult)
-	{
-		qWarning() << "compilation error: " << QString::fromStdWString(error.toWString());
-		qWarning() << source;
-		return QString::fromStdWString(error.message);
-	}
+    // then run the code...
+    thymio->inQueue.emplace(new Run(nodeId));
 
-	// fill the bytecode messages
-	vector<Message*> setBytecodeMessages;
-	sendBytecode(setBytecodeMessages, nodeId, vector<uint16>(bytecode.begin(), bytecode.end()));
-	for_each(setBytecodeMessages.begin(), setBytecodeMessages.end(), [=](Message* message){ thymio->inQueue.emplace(message); });
+    // ...run for hundred time steps
+    for (unsigned i(0); i<100; ++i) {
+        //qDebug() << "Thymio Position : " << thymio->pos.x << thymio->pos.y;
+        step();
+    }
 
-	// then run the code...
-	thymio->inQueue.emplace(new Run(nodeId));
+    // and check the robot has stopped
+    const Point robotPos(thymio->pos);
+    step();
+    const Point deltaPos(thymio->pos - robotPos);
 
-	// ...run for hundred time steps
-	for (unsigned i(0); i<100; ++i)
-		step();
+    // if not it is an error
+    if (deltaPos.x > numeric_limits<double>::epsilon() || deltaPos.y > numeric_limits<double>::epsilon())
+    {
+        qWarning() << "Robot is still moving after 100 time steps, delta:" << deltaPos.x << deltaPos.y;
+        return "";
+    }
+    else {
+        qWarning() << "Robot is not moving 100 time steps, position:" << robotPos.x << robotPos.y;
+    }
 
-	// and check the robot has stopped
-	const Point robotPos(thymio->pos);
-	step();
-	const Point deltaPos(thymio->pos - robotPos);
-
-	// if not it is an error
-	if (deltaPos.x > numeric_limits<double>::epsilon() || deltaPos.y > numeric_limits<double>::epsilon())
-	{
-		qWarning() << "Robot is still moving after 100 time steps, delta:" << deltaPos.x << deltaPos.y;
-		return "";
-	}
-
-	return "simulation success";
+    return "simulation success";
 }
