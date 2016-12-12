@@ -157,5 +157,18 @@
         <file>UserTask.qml</file>
         <file>UnitTest.qml</file>
         <file>Scenario.qml</file>
+        <file>Scoreboard.qml</file>
+        <file>images/userhints/barre rouage.png</file>
+        <file>images/userhints/barre vert.png</file>
+        <file>images/userhints/barre.png</file>
+        <file>images/userhints/cornerLeft.png</file>
+        <file>images/userhints/cornerRight.png</file>
+        <file>images/userhints/corridor.png</file>
+        <file>images/userhints/empty.png</file>
+        <file>images/userhints/labyrinth.png</file>
+        <file>images/userhints/feu_rouge.png</file>
+        <file>images/userhints/feu_vert.png</file>
+        <file>images/userhints/feu_blanc.png</file>
+        <file>images/userhints/feu_jaune.png</file>
     </qresource>
 </RCC>

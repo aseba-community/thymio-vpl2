@@ -207,7 +207,7 @@ QString AsebaNode::setProgram(QVariantMap events, QString source) {
 	std::wistringstream input(source.toStdWString());
 	Aseba::BytecodeVector bytecode;
 	unsigned allocatedVariablesCount;
-	Aseba::Error error;
+    Aseba::Error error;
 	bool result = compiler.compile(input, bytecode, allocatedVariablesCount, error);
 
 	if (!result) {

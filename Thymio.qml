@@ -27,11 +27,11 @@ Item {
 
 	onNodeChanged: {
 		setVariables();
-		setProgram();
+		testProgram();
 	}
 	onVariablesChanged: setVariables()
-	onEventsChanged: setProgram()
-	onSourceChanged: setProgram()
+	onEventsChanged: testProgram()
+	onSourceChanged: testProgram()
 
 	function setVariables() {
 		if (node) {
@@ -45,9 +45,14 @@ Item {
 		}
 	}
 
-	function setProgram() {
+	function testProgram() {
         // TODO: put simulation in a thread
+		// for senarios
         simulator.testProgram(userTask, events, source);
+
+		// acquire results
+		// send to scoreboard
+
 		if (node) {
 			error = node.setProgram(events, source);
 		}

@@ -5,37 +5,9 @@ QtObject {
     property string name: "labyrinth"
 
     property list<UnitTest> unitTests: [
-        UnitTest {
-            id: test_labyrinth
-            name: "test_labyrinth"
-            combinationRule: "max"
-
-            scenarios: [
-                Scenario {
-                    name: "labyrinth"
-                    simTime: 10
-                    initialPosition: Qt.vector3d(30,50,-1.57)
-                    worldSize: Qt.vector2d(120,100)
-                    walls: [
-                        Wall {position: Qt.vector2d(60,80); size: Qt.vector3d(81,2,10)},
-                        Wall {position: Qt.vector2d(60,20); size: Qt.vector3d(81,2,10)},
-                        Wall {position: Qt.vector2d(20,50); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(100,50); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(40,60); size: Qt.vector3d(2,41,10)},
-                        Wall {position: Qt.vector2d(50,40); size: Qt.vector3d(21,2,10)},
-                        Wall {position: Qt.vector2d(70,60); size: Qt.vector3d(21,2,10)},
-                        Wall {position: Qt.vector2d(80,40); size: Qt.vector3d(2,41,10)}
-                    ]
-                    evaluationMetric: "tiles"
-                    tiles: [Qt.vector2d(30,70),Qt.vector2d(30,50),Qt.vector2d(30,30),Qt.vector2d(50,30),Qt.vector2d(70,30),Qt.vector2d(70,50),
-                            Qt.vector2d(50,50),Qt.vector2d(50,70),Qt.vector2d(70,70),Qt.vector2d(90,70),Qt.vector2d(90,50),Qt.vector2d(90,30)]
-                    tileScores:  [-20,0,20,40,60,80,100,120,140,160,180,200]
-                }
-            ]
-        },
-
-        UnitTest {
+		UnitTest {
             name: "test_emptyMap"
+			image: "qrc:/thymio-vpl2/images/userhints/empty.png"
             combinationRule: "max"
 
             scenarios: [
@@ -53,6 +25,7 @@ QtObject {
 
         UnitTest {
             name: "test_corridor"
+			image: "qrc:/thymio-vpl2/images/userhints/corridor.png"
             combinationRule: "mean"
 
             scenarios: [
@@ -85,6 +58,7 @@ QtObject {
 
         UnitTest {
             name: "test_leftCorner"
+			image: "qrc:/thymio-vpl2/images/userhints/cornerLeft.png"
             combinationRule: "mean"
 
             scenarios: [
@@ -123,6 +97,7 @@ QtObject {
 
         UnitTest {
             name: "test_rightCorner"
+			image: "qrc:/thymio-vpl2/images/userhints/cornerRight.png"
             combinationRule: "mean"
 
             scenarios: [
@@ -157,6 +132,35 @@ QtObject {
                     tileScores: [0,0,20,40,60]
                 }
             ]
-        }
+		},
+
+		UnitTest {
+			name: "test_labyrinth"
+			image: "qrc:/thymio-vpl2/images/userhints/labyrinth.png"
+			combinationRule: "max"
+
+			scenarios: [
+				Scenario {
+					name: "labyrinth"
+					simTime: 10
+					initialPosition: Qt.vector3d(30,50,-1.57)
+					worldSize: Qt.vector2d(120,100)
+					walls: [
+						Wall {position: Qt.vector2d(60,80); size: Qt.vector3d(81,2,10)},
+						Wall {position: Qt.vector2d(60,20); size: Qt.vector3d(81,2,10)},
+						Wall {position: Qt.vector2d(20,50); size: Qt.vector3d(2,61,10)},
+						Wall {position: Qt.vector2d(100,50); size: Qt.vector3d(2,61,10)},
+						Wall {position: Qt.vector2d(40,60); size: Qt.vector3d(2,41,10)},
+						Wall {position: Qt.vector2d(50,40); size: Qt.vector3d(21,2,10)},
+						Wall {position: Qt.vector2d(70,60); size: Qt.vector3d(21,2,10)},
+						Wall {position: Qt.vector2d(80,40); size: Qt.vector3d(2,41,10)}
+					]
+					evaluationMetric: "tiles"
+					tiles: [Qt.vector2d(30,70),Qt.vector2d(30,50),Qt.vector2d(30,30),Qt.vector2d(50,30),Qt.vector2d(70,30),Qt.vector2d(70,50),
+							Qt.vector2d(50,50),Qt.vector2d(50,70),Qt.vector2d(70,70),Qt.vector2d(90,70),Qt.vector2d(90,50),Qt.vector2d(90,30)]
+					tileScores:  [-20,0,20,40,60,80,100,120,140,160,180,200]
+				}
+			]
+		}
     ]
 }

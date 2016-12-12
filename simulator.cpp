@@ -145,19 +145,16 @@ void Simulator::setProgram(QVariantMap newEvents, QString newSource) {
 }
 
 QString Simulator::testProgram(QVariant newUserTask, QVariantMap newEvents, QString newSource) {
-    setUserTask(newUserTask);
-    setProgram(newEvents, newSource);
-    return testProgram();
-}
+	setUserTask(newUserTask);
+	setProgram(newEvents, newSource);
 
-QString Simulator::testProgram() {
     // Parameters
     const double dt(0.03);
-    qDebug() << program.events;
-    qDebug() << program.source;
+	qDebug() << "events sim : " << program.events;
+	qDebug() << "source sim : " << program.source;
 
     // create world, robot and nodes manager
-    World world(40,40);
+	World world(40,20);
     DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
     thymio->pos = {10, 10};
     world.addObject(thymio);
@@ -170,7 +167,7 @@ QString Simulator::testProgram() {
     auto step = [&]() {
         world.step(dt);
         SimulatorNodesManager.step();
-        qInfo() << "- stepped, robot pos:" << thymio->pos.x << thymio->pos.y;
+		//qInfo() << "- stepped, robot pos:" << thymio->pos.x << thymio->pos.y;
     };
 
     // step twice for the detection and enumeration round-trip
@@ -197,14 +194,17 @@ QString Simulator::testProgram() {
 
     // compile a small code
     Compiler compiler;
-    CommonDefinitions commonDefinitions(AsebaNode::commonDefinitionsFromEvents(program.events));
+	CommonDefinitions commonDefinitions(AsebaNode::commonDefinitionsFromEvents(program.events));
     compiler.setTargetDescription(targetDescription);
     compiler.setCommonDefinitions(&commonDefinitions);
-    std::wistringstream input(program.source.toStdWString());
-    BytecodeVector bytecode;
-    unsigned allocatedVariablesCount;
-    Error error;
-    const bool compilationResult(compiler.compile(input, bytecode, allocatedVariablesCount, error));
+
+	wistringstream input(newSource.toStdWString());
+	BytecodeVector bytecode;
+	unsigned allocatedVariablesCount;
+	Error error;
+	const bool compilationResult(compiler.compile(input, bytecode, allocatedVariablesCount, error));
+	qDebug() << "compilationResult" << compilationResult;
+
     if (!compilationResult) {
         qWarning() << "compilation error: " << QString::fromStdWString(error.toWString());
         qWarning() << program.source;

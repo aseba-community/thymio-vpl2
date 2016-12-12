@@ -46,6 +46,16 @@ ApplicationWindow {
 				contentItem: Image {
 					anchors.centerIn: parent
 					anchors.rightMargin: 12
+					source: "qrc:/thymio-vpl2/icons/ic_menu_white_24px.svg"
+				}
+				visible: !vplEditor.blockEditorVisible
+				onClicked: scoreBoard.open()
+			}
+
+			ToolButton {
+				contentItem: Image {
+					anchors.centerIn: parent
+					anchors.rightMargin: 12
 					source: !thymio.playing ? "qrc:/thymio-vpl2/icons/ic_play_white_48px.svg" : "qrc:/thymio-vpl2/icons/ic_stop_white_48px.svg"
 				}
 				visible: !vplEditor.blockEditorVisible
@@ -161,6 +171,10 @@ ApplicationWindow {
 	LoadSaveDialog {
 		id: saveProgramDialog
 		vplEditor: vplEditor
+	}
+
+	Scoreboard {
+		id: scoreBoard
 	}
 
 	Aseba {
