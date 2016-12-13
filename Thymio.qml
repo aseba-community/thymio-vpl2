@@ -17,6 +17,7 @@ Item {
 		}
 	}
 
+	// TODO: use a loader for userTask
     UserTask {
         id: userTask
     }
@@ -47,11 +48,56 @@ Item {
 
 	function testProgram() {
         // TODO: put simulation in a thread
-		// for senarios
-        simulator.testProgram(userTask, events, source);
+		var i, j
+		var testScores = []
+		var userTaskScore = 0
+		for (i=0 ; i<userTask.unitTests.length ; i++) {
+			var scenarioScores = []
+			for (j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
+				//scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
+				scenarioScores.push(0.4*i)
+			}
 
-		// acquire results
-		// send to scoreboard
+			// Combinate scenarios' scores to make test's score
+			switch(userTask.unitTests[i].combinationRule) {
+				case "mean":
+					var sum = 0
+					for (j=0 ; j<scenarioScores.length ; j++) {
+						sum += scenarioScores[j]
+					}
+					testScores.push(sum/scenarioScores.length)
+					break;
+				case "max":
+					var max = 0
+					for (j=0 ; j<scenarioScores.length ; j++) {
+						if (scenarioScores[j] > max) {
+							max = scenarioScores[j]
+						}
+					}
+					testScores.push(max)
+					break;
+				case "min":
+					var min = 0
+					for (j=0 ; j<scenarioScores.length ; j++) {
+						if (scenarioScores[j] < min) {
+							min = scenarioScores[j]
+						}
+					}
+					testScores.push(min)
+					break;
+				default:
+					testScores.push(scenarioScores[0])
+			}
+
+			// Check if this unitTest correspond to the task
+			if (userTask.unitTests[i].name === "test_" + userTask.name) {
+				userTaskScore = testScores[testScores.length - 1] > userTask.unitTests[i].scoreMax ?
+							1 : testScores[testScores.length - 1] / userTask.unitTests[i].scoreMax
+			}
+		}
+
+		// send scores to scoreboard
+		scoreBoard.update_scores(testScores, userTaskScore)
 
 		if (node) {
 			error = node.setProgram(events, source);

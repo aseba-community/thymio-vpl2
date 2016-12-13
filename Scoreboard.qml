@@ -13,6 +13,7 @@ Popup {
 
 	property double experience: 0
 	property var scores
+	property var iconVisibility
 	property double percentageCompletion: 20
 	property string userTaskName: userTask.name
 
@@ -21,12 +22,17 @@ Popup {
 	}
 
 	function update_experience(timeSinceBegin, timePlayed, runNumber) {
+		var i
 		experience = timeSinceBegin
+		for (i=0 ; i<userTask.unitTests.length; i++) {
+			if (iconVisibility[i] === 0 && experience > userTask.unitTests.visibilityThreshold)
+				iconVisibility[i] = 1
+		}
 	}
 
-	function update_scores(newScores) {
+	function update_scores(newScores, mainScore) {
 		dialog.scores = newScores
-		// TODO: update percentageComplation based on userTask.unitTests[i].threshold
+		dialog.percentageCompletion = mainScore * 100
 	}
 
 	ColumnLayout {
@@ -91,7 +97,7 @@ Popup {
 					Layout.alignment: Qt.AlignHCenter
 					Rectangle {
 						Layout.alignment: Qt.AlignVCenter
-						color: "grey"
+						color: "red"
 						Layout.preferredWidth: 80
 						Layout.preferredHeight: 80
 						radius: 40
@@ -104,6 +110,7 @@ Popup {
 							visible: true
 							source: userTask.unitTests[index].image
 						}
+						// Text { text: scores[index] }
 					}
 					Rectangle {
 						Layout.alignment: Qt.AlignCenter
@@ -117,7 +124,9 @@ Popup {
 							fillMode: Image.PreserveAspectFit
 							visible: true
 							// TODO: change iamge depending on scores
-							source: "qrc:/thymio-vpl2/images/userhints/feu_rouge.png"
+							source: scores[index] > userTask.unitTests[index].scoreMax ? "qrc:/thymio-vpl2/images/userhints/feu_vert.png" :
+									(scores[index] > userTask.unitTests[index].scoreAverage ? "qrc:/thymio-vpl2/images/userhints/feu_jaune.png" :
+																						 "qrc:/thymio-vpl2/images/userhints/feu_rouge.png")
 						}
 					}
 				}

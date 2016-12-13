@@ -9,4 +9,9 @@ QtObject {
     // Rule ussed to compute the uniTest's score from the scenarios' scores
     // Possible choices: none, mean, max, min
     property string combinationRule: "none"
+
+	// Score threshold for "goal reached"
+	property double scoreMax: 0.8
+	// Score threshold for "average performance"
+	property double scoreAverage: 0.4
 }

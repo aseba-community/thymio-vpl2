@@ -10,6 +10,9 @@ QtObject {
 			image: "qrc:/thymio-vpl2/images/userhints/empty.png"
             combinationRule: "max"
 
+			scoreMax: 0.5
+			scoreAverage: 0.1
+
             scenarios: [
                 Scenario {
                     name: "emptyMap"
@@ -27,6 +30,9 @@ QtObject {
             name: "test_corridor"
 			image: "qrc:/thymio-vpl2/images/userhints/corridor.png"
             combinationRule: "mean"
+
+			scoreMax: 0.5
+			scoreAverage: 0.1
 
             scenarios: [
                 Scenario {
@@ -60,6 +66,9 @@ QtObject {
             name: "test_leftCorner"
 			image: "qrc:/thymio-vpl2/images/userhints/cornerLeft.png"
             combinationRule: "mean"
+
+			scoreMax: 0.66
+			scoreAverage: 0.33
 
             scenarios: [
                 Scenario {
@@ -100,6 +109,9 @@ QtObject {
 			image: "qrc:/thymio-vpl2/images/userhints/cornerRight.png"
             combinationRule: "mean"
 
+			scoreMax: 0.66
+			scoreAverage: 0.33
+
             scenarios: [
                 Scenario {
                     name: "simpleRightCorner"
@@ -138,6 +150,9 @@ QtObject {
 			name: "test_labyrinth"
 			image: "qrc:/thymio-vpl2/images/userhints/labyrinth.png"
 			combinationRule: "max"
+
+			scoreMax: 0.4
+			scoreAverage: 0.2
 
 			scenarios: [
 				Scenario {
