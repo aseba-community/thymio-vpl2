@@ -18,7 +18,7 @@ Item {
 	}
 
 	// TODO: use a loader for userTask
-    UserTask {
+	UserTask {
         id: userTask
     }
 
@@ -34,7 +34,8 @@ Item {
 	onEventsChanged: setProgram()
 	onSourceChanged: {
 		setProgram()
-		testProgram()
+		if (playing)
+			testProgram()
 	}
 
 	function setVariables() {
@@ -64,6 +65,7 @@ Item {
 			var scenarioScores = []
 			for (j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
 				scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
+				console.log(userTask.unitTests[i].scenarios[j].name, scenarioScores[scenarioScores.length-1])
 			}
 
 			// Combinate scenarios' scores to make test's score
@@ -105,7 +107,6 @@ Item {
 		}
 
 		// send scores to scoreboard
-		console.log(testScores)
 		scoreBoard.update_scores(testScores, userTaskScore)
 	}
 }

@@ -12,27 +12,28 @@ Popup {
 	closePolicy: Popup.OnEscape | Popup.OnPressOutside
 
 	property double experience: 0
-	property var scores
-	property var iconVisibility
-	property double percentageCompletion: 20
+	property var scores: []
+	property var iconUnlock: []
+	property var iconVisibility: vplEditor.compiler.error !== "" ? false : true
+	property double percentageCompletion: 0
 	property string userTaskName: userTask.name
 
 	UserTask {
 		id: userTask
 	}
 
-	function update_experience(timeSinceBegin, timePlayed, runNumber) {
-		var i
-		dialog.experience = timeSinceBegin
-		for (i=0 ; i<userTask.unitTests.length; i++) {
-			if (iconVisibility[i] === 0 && experience > userTask.unitTests.visibilityThreshold)
-				iconVisibility[i] = 1
-		}
-	}
-
 	function update_scores(newScores, mainScore) {
+		// update icones
 		dialog.scores = newScores
-		dialog.percentageCompletion = mainScore * 100
+
+		// Check for new icon to unlock
+		iconUnlock = []
+		for (var i=0 ; i<userTask.unitTests.length ; i++)
+			iconUnlock[i] = experience >= userTask.unitTests[i].experienceNeeded ? true : false
+
+		// Update best score on main task
+		if (dialog.percentageCompletion < mainScore * 100)
+			dialog.percentageCompletion = mainScore * 100
 	}
 
 	ColumnLayout {
@@ -97,17 +98,17 @@ Popup {
 					Layout.alignment: Qt.AlignHCenter
 					Rectangle {
 						Layout.alignment: Qt.AlignVCenter
-						color: "red"
+						color: "grey"
 						Layout.preferredWidth: 80
 						Layout.preferredHeight: 80
 						radius: 40
 						// TODO: change visibility depending on experience
-						visible: true
+						visible: iconUnlock[index] && iconVisibility
 						Image {
 							anchors.centerIn: parent
 							width: parent.width
 							fillMode: Image.PreserveAspectFit
-							visible: true
+							visible: iconUnlock[index]
 							source: userTask.unitTests[index].image
 						}
 						// Text { text: scores[index] }

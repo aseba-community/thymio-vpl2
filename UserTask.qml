@@ -45,6 +45,8 @@ QtObject {
                         Wall {position: Qt.vector2d(40,100); size: Qt.vector3d(2,200,10)}
                     ]
                     evaluationMetric: "tiles"
+					tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(30,70),Qt.vector2d(30,90),Qt.vector2d(30,110)]
+					tileScores: [0,20,40,60,80,100]
                 },
                 Scenario {
                     name: "UnalignedCorridor"

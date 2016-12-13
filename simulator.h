@@ -18,6 +18,7 @@ class Simulator: public QObject {
         Aseba::BytecodeVector bytecode;
     };
 
+	// TODO: remove struct
     struct Scenario {
         Scenario() : name("newScenario"), simTime(0), initialPosition(20,20,0), worldSize(20,20), evaluationMetric("none") {}
 
@@ -45,6 +46,7 @@ public slots:
 private:
 	double compute_score(QVector<QVector3D> positionLog, QVector<QVector<double>> sensorLog);
 
+	// TODO: remove variables (so it can be multithreaded)
 	Program program;
 	Scenario scenario;
 };

@@ -14,4 +14,6 @@ QtObject {
 	property double scoreMax: 0.8
 	// Score threshold for "average performance"
 	property double scoreAverage: 0.4
+	// Experience needed to make the icon appear in the score board
+	property double experienceNeeded: 0.0
 }

@@ -101,18 +101,16 @@ double Simulator::testProgram(QVariant newScenario, QVariantMap newEvents, QStri
 	setProgram(newEvents, newSource);
 	setScenario(newScenario);
 
-	qDebug() << "Simulating - " << scenario.name;
-
     // Parameters
 	const double dt(0.2);
 
 	// Create world, robot and nodes manager
 	World world(scenario.worldSize.x(), scenario.worldSize.y());
-	/*
+
 	for (int i=0 ; i<scenario.walls.count() ; i++){
-		world.addObject(scenario.walls[i]);
+		world.addObject(new Enki::PhysicalObject(scenario.walls[i]));
 	}
-	*/
+
 	DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
 	thymio->pos = {scenario.initialPosition.x(), scenario.initialPosition.y()};
 	thymio->angle = scenario.initialPosition.z();
@@ -188,7 +186,7 @@ double Simulator::testProgram(QVariant newScenario, QVariantMap newEvents, QStri
 			positionLog.append(position);
 		}
 		if (scenario.evaluationMetric == "sensor") {
-			QVector<double> sensor(NULL);
+			QVector<double> sensor;
 			sensor.append(thymio->infraredSensor0.getValue());
 			sensor.append(thymio->infraredSensor1.getValue());
 			sensor.append(thymio->infraredSensor2.getValue());
@@ -216,20 +214,29 @@ double Simulator::testProgram(QVariant newScenario, QVariantMap newEvents, QStri
 
 double Simulator::compute_score(QVector<QVector3D> positionLog, QVector<QVector<double>> sensorLog) {
 	if (scenario.evaluationMetric == "tiles") {
-		return 0.3;
-		/*
+		if (scenario.tiles.isEmpty())
+			return 0.0;
 		double score(0);
 		for (int i=0 ; i<positionLog.length() ; i++) {
-			QVector<double> distances;
-			for (int j=0 ; j<scenario.tiles.length() ; j++) {
-				distances.append(sqrt(pow(positionLog[i].x() - scenario.tiles[j].x(),2) +
+			double minDistance(sqrt(pow(positionLog[i].x() - scenario.tiles[0].x(),2) +
+									pow(positionLog[i].y() - scenario.tiles[0].y(),2)));
+			int nearestTileIndex(0);
+			for (int j=1 ; j<scenario.tiles.length() ; j++) {
+				double distance(sqrt(pow(positionLog[i].x() - scenario.tiles[j].x(),2) +
 									  pow(positionLog[i].y() - scenario.tiles[j].y(),2)));
+				if (distance < minDistance) {
+					nearestTileIndex = j;
+					minDistance = distance;
+				}
 			}
-			int nearestTileIndex(distances.indexOf((distances)));
-			score = max(score, scenario.tileScores[nearestTileIndex] + 20 - sqrt(pow(positionLog[i].x() - scenario.tiles[nearestTileIndex+1].x(),2) +
-																				 pow(positionLog[i].y() - scenario.tiles[nearestTileIndex+1].y(),2)));
+			if (nearestTileIndex+1 < scenario.tiles.length()) {
+				score = max(score, scenario.tileScores[nearestTileIndex] + 20 - sqrt(pow(positionLog[i].x() - scenario.tiles[nearestTileIndex+1].x(),2) +
+																					 pow(positionLog[i].y() - scenario.tiles[nearestTileIndex+1].y(),2)));
+			}
+			else
+				score = scenario.tileScores.last();
 		}
-		return score / scenario.tileScores.last();*/
+		return score / scenario.tileScores.last();
 	}
 	else if (scenario.evaluationMetric == "distance") {
 		double score(sqrt(pow(positionLog[positionLog.length()-1].x() - positionLog[0].x(),2) +
