@@ -35,103 +35,56 @@ struct SimulatorNodesManager: NodesManager
 	}
 };
 
-void Simulator::setUserTask(QVariant newUserTask) {
+void Simulator::setScenario(QVariant newScenario) {
 
-    // Delete previous data in userTask member
-    userTask.unitTests.clear();
+	// Get scenario from qml
+	QObject * scenarioObj = qvariant_cast<QObject *>(newScenario);
 
-    // Get userTask from qml
-    QObject * newUserTaskObj = qvariant_cast<QObject *>(newUserTask);
-    userTask.name = qvariant_cast<QString>(newUserTaskObj->property("name"));
+	scenario.name = qvariant_cast<QString>(scenarioObj->property("name"));
+	scenario.simTime = qvariant_cast<double>(scenarioObj->property("simTime"));
+	scenario.initialPosition = qvariant_cast<QVector3D>(scenarioObj->property("initialPosition"));
+	scenario.worldSize = qvariant_cast<QVector2D>(scenarioObj->property("worldSize"));
+	scenario.evaluationMetric = qvariant_cast<QString>(scenarioObj->property("evaluationMetric"));
 
-    // Get unitTest list from qml
-    QQmlProperty property_unitTests(newUserTaskObj, "unitTests");
-    QQmlListReference unitTests = qvariant_cast<QQmlListReference>(property_unitTests.read());
-    for (int i=0 ; i<unitTests.count() ; i++) {
-        UnitTest newUnitTest;
-        newUnitTest.name = qvariant_cast<QString>(unitTests.at(i)->property("name"));
-        newUnitTest.combinationRule = qvariant_cast<QString>(unitTests.at(i)->property("combinationRule"));
+	// Get tiles from qml, which come as a QJSValue containing a list of QVariant(QVector2D)
+	scenario.tiles.clear();
+	QJSValueIterator tiles(qvariant_cast<QJSValue>(scenarioObj->property("tiles")));
+	while(tiles.hasNext()) {
+		tiles.next();
+		if (tiles.name() != "length")
+			scenario.tiles.append(qvariant_cast<QVector2D>(tiles.value().toVariant()));
+	}
 
-        // Get scenario list from qml
-        QQmlProperty property_scenarios(unitTests.at(i), "scenarios");
-        QQmlListReference scenarios = qvariant_cast<QQmlListReference>(property_scenarios.read());
-        for (int j=0 ; j<scenarios.count() ; j++) {
-            Scenario newScenario;
+	// Get tileScores from qml, which come as a QJSValue containing a list of QVariant(double)
+	scenario.tileScores.clear();
+	QJSValueIterator tileScores(qvariant_cast<QJSValue>(scenarioObj->property("tileScores")));
+	while(tileScores.hasNext()) {
+		tileScores.next();
+		if (tileScores.name() != "length")
+			scenario.tileScores.append(tileScores.value().toNumber());
+	}
 
-            newScenario.name = qvariant_cast<QString>(scenarios.at(j)->property("name"));
-            newScenario.simTime = qvariant_cast<double>(scenarios.at(j)->property("simTime"));
-            newScenario.initialPosition = qvariant_cast<QVector3D>(scenarios.at(j)->property("initialPosition"));
-            newScenario.worldSize = qvariant_cast<QVector2D>(scenarios.at(j)->property("worldSize"));
-            newScenario.evaluationMetric = qvariant_cast<QString>(scenarios.at(j)->property("evaluationMetric"));
+	// Get wall list from qml
+	scenario.walls.clear();
+	QQmlProperty property_walls(scenarioObj, "walls");
+	QQmlListReference walls = qvariant_cast<QQmlListReference>(property_walls.read());
+	for (int i=0 ; i<walls.count() ; i++) {
+		Enki::PhysicalObject newWall;
+		newWall.pos.x = qvariant_cast<QVector2D>(walls.at(i)->property("position"))[0];
+		newWall.pos.y = qvariant_cast<QVector2D>(walls.at(i)->property("position"))[1];
+		newWall.angle = qvariant_cast<double>(walls.at(i)->property("angle"));
+		newWall.setRectangular(qvariant_cast<QVector3D>(walls.at(i)->property("size"))[0],
+							   qvariant_cast<QVector3D>(walls.at(i)->property("size"))[1],
+							   qvariant_cast<QVector3D>(walls.at(i)->property("size"))[2],
+							   0);
+		Color color(qvariant_cast<QVector3D>(walls.at(i)->property("color"))[0],
+					qvariant_cast<QVector3D>(walls.at(i)->property("color"))[1],
+					qvariant_cast<QVector3D>(walls.at(i)->property("color"))[2],
+					1.0);
+		newWall.setColor(color);
 
-            // Get tiles from qml, which come as a QJSValue containing a list of QVariant(QVector2D)
-            QJSValueIterator tiles(qvariant_cast<QJSValue>(scenarios.at(j)->property("tiles")));
-            while(tiles.hasNext()) {
-                tiles.next();
-                if (tiles.name() != "length")
-                    newScenario.tiles.append(qvariant_cast<QVector2D>(tiles.value().toVariant()));
-            }
-
-            // Get tileScores from qml, which come as a QJSValue containing a list of double
-            QJSValueIterator tileScores(qvariant_cast<QJSValue>(scenarios.at(j)->property("tileScores")));
-            while(tileScores.hasNext()) {
-                tileScores.next();
-                if (tileScores.name() != "length")
-                    newScenario.tileScores.append(tileScores.value().toNumber());
-            }
-
-            // Get wall list from qml
-            QQmlProperty property_walls(scenarios.at(j), "walls");
-            QQmlListReference walls = qvariant_cast<QQmlListReference>(property_walls.read());
-            for (int k=0 ; k<walls.count() ; k++) {
-                Enki::PhysicalObject newWall;
-
-                newWall.pos.x = qvariant_cast<QVector2D>(walls.at(k)->property("position"))[0];
-                newWall.pos.y = qvariant_cast<QVector2D>(walls.at(k)->property("position"))[1];
-                newWall.angle = qvariant_cast<double>(walls.at(k)->property("angle"));
-                newWall.setRectangular(qvariant_cast<QVector3D>(walls.at(k)->property("size"))[0],
-                                       qvariant_cast<QVector3D>(walls.at(k)->property("size"))[1],
-                                       qvariant_cast<QVector3D>(walls.at(k)->property("size"))[2],
-                                       0);
-                Color color(qvariant_cast<QVector3D>(walls.at(k)->property("color"))[0],
-                            qvariant_cast<QVector3D>(walls.at(k)->property("color"))[1],
-                            qvariant_cast<QVector3D>(walls.at(k)->property("color"))[2],
-                            1.0);
-                newWall.setColor(color);
-
-                newScenario.walls.append(newWall);
-            }
-
-            newUnitTest.scenarios.append(newScenario);
-        }
-        userTask.unitTests.append(newUnitTest);
-    }
-    /*
-    qDebug() << userTask.name << userTask.unitTests.count();
-    for (int i=0 ; i<userTask.unitTests.count() ; i++) {
-        qDebug() << userTask.unitTests[i].name;
-        qDebug() << userTask.unitTests[i].combinationRule;
-        for (int j=0 ; j<userTask.unitTests[i].scenarios.count() ; j++) {
-            qDebug() << "\t" << userTask.unitTests[i].scenarios[j].name;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].simTime;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].initialPosition;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].worldSize;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].evaluationMetric;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].tiles;
-            qDebug() << "\t\t" << userTask.unitTests[i].scenarios[j].tileScores;
-            for (int k=0 ; k<userTask.unitTests[i].scenarios[j].walls.count() ; k++) {
-                qDebug() << "\t\ŧWall" << k;
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].pos.x;
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].pos.y;
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].angle;
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].getHeight();
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].getColor().r();
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].getColor().g();
-                qDebug() << "\t\t\t" << userTask.unitTests[i].scenarios[j].walls[k].getColor().r();
-            }
-        }
-    }
-    */
+		scenario.walls.append(newWall);
+	}
 }
 
 void Simulator::setProgram(QVariantMap newEvents, QString newSource) {
@@ -144,55 +97,61 @@ void Simulator::setProgram(QVariantMap newEvents, QString newSource) {
     program.bytecode.clear();
 }
 
-QString Simulator::testProgram(QVariant newUserTask, QVariantMap newEvents, QString newSource) {
-	setUserTask(newUserTask);
+double Simulator::testProgram(QVariant newScenario, QVariantMap newEvents, QString newSource) {
 	setProgram(newEvents, newSource);
+	setScenario(newScenario);
+
+	qDebug() << "Simulating - " << scenario.name;
 
     // Parameters
-    const double dt(0.03);
-	qDebug() << "events sim : " << program.events;
-	qDebug() << "source sim : " << program.source;
+	const double dt(0.2);
 
-    // create world, robot and nodes manager
-	World world(40,20);
-    DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
-    thymio->pos = {10, 10};
-    world.addObject(thymio);
+	// Create world, robot and nodes manager
+	World world(scenario.worldSize.x(), scenario.worldSize.y());
+	/*
+	for (int i=0 ; i<scenario.walls.count() ; i++){
+		world.addObject(scenario.walls[i]);
+	}
+	*/
+	DirectAsebaThymio2* thymio(new DirectAsebaThymio2());
+	thymio->pos = {scenario.initialPosition.x(), scenario.initialPosition.y()};
+	thymio->angle = scenario.initialPosition.z();
+	world.addObject(thymio);
+
     SimulatorNodesManager SimulatorNodesManager(thymio);
 
-    // list the nodes and step, the robot should send its description to the nodes manager
+	// List the nodes and step, the robot should send its description to the nodes manager
     thymio->inQueue.emplace(ListNodes().clone());
 
-    // we define a step lambda
+	// Define a step lambda
     auto step = [&]() {
         world.step(dt);
-        SimulatorNodesManager.step();
-		//qInfo() << "- stepped, robot pos:" << thymio->pos.x << thymio->pos.y;
+		SimulatorNodesManager.step();
     };
 
-    // step twice for the detection and enumeration round-trip
+	// Step twice for the detection and enumeration round-trip
     step();
     step();
 
-    // check that the nodes manager has received the description from the robot
-    bool ok(false);
-    unsigned nodeId(SimulatorNodesManager.getNodeId(L"thymio-II", 0, &ok));
-    if (!ok) {
-        qCritical() << "nodes manager did not find \"thymio-II\"";
-        return "";
-    }
+	// Check that the nodes manager has received the description from the robot
+	bool ok(false);
+	unsigned nodeId(SimulatorNodesManager.getNodeId(L"thymio-II", 0, &ok));
+	if (!ok) {
+		qCritical() << "nodes manager did not find \"thymio-II\"";
+		return -1;
+	}
     if (nodeId != 1) {
         qCritical() << "nodes manager did not return the right nodeId for \"thymio-II\", should be 1, was " << nodeId;
-        return "";
+		return -1;
     }
 
     const TargetDescription *targetDescription(SimulatorNodesManager.getDescription(nodeId));
     if (!targetDescription) {
         qCritical() << "nodes manager did not return a target description for \"thymio-II\"";
-        return "";
+		return -1;
     }
 
-    // compile a small code
+	// Compile the code
     Compiler compiler;
 	CommonDefinitions commonDefinitions(AsebaNode::commonDefinitionsFromEvents(program.events));
     compiler.setTargetDescription(targetDescription);
@@ -203,37 +162,46 @@ QString Simulator::testProgram(QVariant newUserTask, QVariantMap newEvents, QStr
 	unsigned allocatedVariablesCount;
 	Error error;
 	const bool compilationResult(compiler.compile(input, bytecode, allocatedVariablesCount, error));
-	qDebug() << "compilationResult" << compilationResult;
 
     if (!compilationResult) {
         qWarning() << "compilation error: " << QString::fromStdWString(error.toWString());
         qWarning() << program.source;
-        return QString::fromStdWString(error.message);
-    }
-    else {
-        qDebug() << "compilation ok";
+		qDebug() << QString::fromStdWString(error.message);
+		return -2;
     }
 
-    // fill the bytecode messages
+	// Fill the bytecode messages
     vector<Message*> setBytecodeMessages;
     sendBytecode(setBytecodeMessages, nodeId, vector<uint16>(bytecode.begin(), bytecode.end()));
     for_each(setBytecodeMessages.begin(), setBytecodeMessages.end(), [=](Message* message){ thymio->inQueue.emplace(message); });
 
-    // then run the code...
+	// Run the code and log neede information
+	QVector<QVector3D> positionLog;
+	QVector<QVector<double>> sensorLog;
     thymio->inQueue.emplace(new Run(nodeId));
-
-    // ...run for hundred time steps
-    for (unsigned i(0); i<100; ++i) {
-        //qDebug() << "Thymio Position : " << thymio->pos.x << thymio->pos.y;
-        step();
-    }
-
-    // and check the robot has stopped
+	for (unsigned i(0); i<scenario.simTime/dt; ++i) {
+		step();
+		if (scenario.evaluationMetric == "distance" or
+				scenario.evaluationMetric == "tiles" or
+				scenario.evaluationMetric == "linearity") {
+			QVector3D position(thymio->pos.x, thymio->pos.y, thymio->angle);
+			positionLog.append(position);
+		}
+		if (scenario.evaluationMetric == "sensor") {
+			QVector<double> sensor(NULL);
+			sensor.append(thymio->infraredSensor0.getValue());
+			sensor.append(thymio->infraredSensor1.getValue());
+			sensor.append(thymio->infraredSensor2.getValue());
+			sensor.append(thymio->infraredSensor3.getValue());
+			sensor.append(thymio->infraredSensor4.getValue());
+			sensorLog.append(sensor);
+		}
+	}
+	/*
+	// Check that the robot has stopped, if not it is an error
     const Point robotPos(thymio->pos);
     step();
     const Point deltaPos(thymio->pos - robotPos);
-
-    // if not it is an error
     if (deltaPos.x > numeric_limits<double>::epsilon() || deltaPos.y > numeric_limits<double>::epsilon())
     {
         qWarning() << "Robot is still moving after 100 time steps, delta:" << deltaPos.x << deltaPos.y;
@@ -242,6 +210,57 @@ QString Simulator::testProgram(QVariant newUserTask, QVariantMap newEvents, QStr
     else {
         qWarning() << "Robot is not moving 100 time steps, position:" << robotPos.x << robotPos.y;
     }
+	*/
+	return compute_score(positionLog, sensorLog);;
+}
 
-    return "simulation success";
+double Simulator::compute_score(QVector<QVector3D> positionLog, QVector<QVector<double>> sensorLog) {
+	if (scenario.evaluationMetric == "tiles") {
+		return 0.3;
+		/*
+		double score(0);
+		for (int i=0 ; i<positionLog.length() ; i++) {
+			QVector<double> distances;
+			for (int j=0 ; j<scenario.tiles.length() ; j++) {
+				distances.append(sqrt(pow(positionLog[i].x() - scenario.tiles[j].x(),2) +
+									  pow(positionLog[i].y() - scenario.tiles[j].y(),2)));
+			}
+			int nearestTileIndex(distances.indexOf((distances)));
+			score = max(score, scenario.tileScores[nearestTileIndex] + 20 - sqrt(pow(positionLog[i].x() - scenario.tiles[nearestTileIndex+1].x(),2) +
+																				 pow(positionLog[i].y() - scenario.tiles[nearestTileIndex+1].y(),2)));
+		}
+		return score / scenario.tileScores.last();*/
+	}
+	else if (scenario.evaluationMetric == "distance") {
+		double score(sqrt(pow(positionLog[positionLog.length()-1].x() - positionLog[0].x(),2) +
+						  pow(positionLog[positionLog.length()-1].y() - positionLog[0].y(),2)));
+		return score / sqrt(pow(scenario.worldSize.x(), 2) + pow(scenario.worldSize.y(), 2));
+	}
+	else if (scenario.evaluationMetric == "sensor") {
+		/*
+		# Compute score depending on sensor values
+		scoreList = []
+		for sensor in sensorMat:
+			scoreList.append(np.max(sensor))
+		scoreSensor = (4500 - float(np.mean(scoreList))) / 2500
+		*/
+		return 0.1;
+	}
+	else if (scenario.evaluationMetric == "collision") {
+		/*
+		# Compute a score based on collisions
+		scoreCollision = 0
+		for sensorArray in sensorMat:
+			if np.max(sensorArray) >= 4500:
+				scoreCollision += 1
+		scoreCollision = float(scoreCollision) / len(sensorMat)
+
+		scoreCollision = math.fabs(scoreCollision - 1.0) # scale so that 1 is "good" and 0 is "bad"
+		*/
+		return 0.1;
+	}
+	else {
+		qDebug() << "[Simulator] Unknown metric : " << scenario.evaluationMetric;
+		return 0.0;
+	}
 }

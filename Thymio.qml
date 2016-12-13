@@ -28,11 +28,14 @@ Item {
 
 	onNodeChanged: {
 		setVariables();
-		testProgram();
+		setProgram();
 	}
 	onVariablesChanged: setVariables()
-	onEventsChanged: testProgram()
-	onSourceChanged: testProgram()
+	onEventsChanged: setProgram()
+	onSourceChanged: {
+		setProgram()
+		testProgram()
+	}
 
 	function setVariables() {
 		if (node) {
@@ -45,6 +48,12 @@ Item {
 			})
 		}
 	}
+	function setProgram() {
+		simulator.setProgram(events, source)
+		if (node) {
+			error = node.setProgram(events, source);
+		}
+	}
 
 	function testProgram() {
         // TODO: put simulation in a thread
@@ -54,8 +63,7 @@ Item {
 		for (i=0 ; i<userTask.unitTests.length ; i++) {
 			var scenarioScores = []
 			for (j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
-				//scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
-				scenarioScores.push(0.4*i)
+				scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
 			}
 
 			// Combinate scenarios' scores to make test's score
@@ -97,10 +105,7 @@ Item {
 		}
 
 		// send scores to scoreboard
+		console.log(testScores)
 		scoreBoard.update_scores(testScores, userTaskScore)
-
-		if (node) {
-			error = node.setProgram(events, source);
-		}
 	}
 }

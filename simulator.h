@@ -12,7 +12,6 @@
 class Simulator: public QObject {
 	Q_OBJECT
 
-    // Sub struct
     struct Program {
         QVariantMap events;
         QString source;
@@ -33,31 +32,21 @@ class Simulator: public QObject {
         QVector<QVector2D> tiles;
         QVector<int> tileScores;
     };
-    struct UnitTest {
-        UnitTest() : name("newUnitTest"), scenarios(NULL), combinationRule("none") {}
-
-        QString name;
-        QVector<Scenario> scenarios;
-        QString combinationRule;
-    };
-    struct UserTask {
-        UserTask() : unitTests(NULL) {}
-
-        QString name;
-        QVector<UnitTest> unitTests;
-    };
 
 public slots:
-    // Update the userTask, events and source in the simulator and run the simulation
-    QString testProgram(QVariant userTask, QVariantMap newEvents, QString newSource);
+	// Run the simulation
+	double testProgram(QVariant userTask, QVariantMap newEvents, QString newSource);
+	//QString testProgram(QVariant newScenario);
     // Update program information in the simulator (events and source)
-    void setProgram(QVariantMap newEvents, QString newSource);
-    // Update the userTask in the simulator
-    void setUserTask(QVariant newUserTask);
+	void setProgram(QVariantMap newEvents, QString newSource);
+	// Update scenario information in the simulator
+	void setScenario(QVariant newScenario);
 
 private:
-    Program program;
-    UserTask userTask;
+	double compute_score(QVector<QVector3D> positionLog, QVector<QVector<double>> sensorLog);
+
+	Program program;
+	Scenario scenario;
 };
 
 #endif // SIMULATOR_H

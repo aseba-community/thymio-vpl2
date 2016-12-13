@@ -7,7 +7,7 @@ QtObject {
     property list<UnitTest> unitTests: [
 		UnitTest {
             name: "test_emptyMap"
-			image: "qrc:/thymio-vpl2/images/userhints/empty.png"
+			image: "qrc:/thymio-vpl2/images/userhints/log avant 2.png"
             combinationRule: "max"
 
 			scoreMax: 0.5
@@ -20,7 +20,7 @@ QtObject {
                     initialPosition: Qt.vector3d(100,100,0.0)
                     worldSize: Qt.vector2d(200,200)
                     walls: []
-                    evaluationMetric: "linearity"
+					evaluationMetric: "distance"
                 }
 
             ]

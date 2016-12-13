@@ -23,7 +23,7 @@ Popup {
 
 	function update_experience(timeSinceBegin, timePlayed, runNumber) {
 		var i
-		experience = timeSinceBegin
+		dialog.experience = timeSinceBegin
 		for (i=0 ; i<userTask.unitTests.length; i++) {
 			if (iconVisibility[i] === 0 && experience > userTask.unitTests.visibilityThreshold)
 				iconVisibility[i] = 1
@@ -91,7 +91,7 @@ Popup {
 			spacing: 20
 			anchors.horizontalCenter: parent.horizontalCenter
 			Repeater {
-				model: 3
+				model: 5
 				ColumnLayout {
 					spacing: 5
 					Layout.alignment: Qt.AlignHCenter
@@ -123,7 +123,6 @@ Popup {
 							width: parent.width
 							fillMode: Image.PreserveAspectFit
 							visible: true
-							// TODO: change iamge depending on scores
 							source: scores[index] > userTask.unitTests[index].scoreMax ? "qrc:/thymio-vpl2/images/userhints/feu_vert.png" :
 									(scores[index] > userTask.unitTests[index].scoreAverage ? "qrc:/thymio-vpl2/images/userhints/feu_jaune.png" :
 																						 "qrc:/thymio-vpl2/images/userhints/feu_rouge.png")
