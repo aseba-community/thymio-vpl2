@@ -4,8 +4,8 @@ import QtQuick.Controls.Styles 1.4
 import Simulator 1.0
 
 Rectangle {
-	property bool active: true
-	visible: active
+	property bool scoreBarVisible: true
+	visible: scoreBarVisible
 
 	property double experience: 0
 	property var scores: []
