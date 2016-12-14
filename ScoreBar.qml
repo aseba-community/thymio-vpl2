@@ -7,8 +7,12 @@ Rectangle {
 	property bool scoreBarVisible: true
 	visible: scoreBarVisible
 
+	property bool firstLogEntry: true
+	property var timeBegin: new Date()
+
 	property double experience: 0
 	property var scores: []
+	property var scenarioScores: []
 	property int iconProgression: 0
 	property var iconUnlock: [true,false,true,false,true]
 	property var iconVisibility: vplEditor.compiler.error !== "" ? false : true
@@ -24,6 +28,15 @@ Rectangle {
 		id: simulator
 	}
 
+	function writeLogs() {
+		var timeNow = new Date()
+		if (firstLogEntry) {
+			firstLogEntry = false
+			console.log(timeBegin, timeBegin.getTime(), "BEGIN")
+		}
+		console.log(timeNow.getTime(), "RUN", timeNow.getTime()-timeBegin.getTime(), scenarioScores, percentageCompletion)
+	}
+
 	function setProgram(events, source) {
 		simulator.setProgram(events, source)
 	}
@@ -34,24 +47,24 @@ Rectangle {
 		scores = newScores
 
 		// Check for new icon to unlock
-		for (var i=0 ; i<userTask.unitTests.length ; i++)
-			iconUnlock[i] = experience >= userTask.unitTests[i].experienceNeeded ? true : false
-		if (iconProgression < userTask.unitTests.length)
-			iconProgression++
+		if (iconProgression < userTask.unitTests.length) {
+			var timeSpent_min = (new Date().getTime() - timeBegin.getTime()) / 60000
+			iconProgression = Math.round(timeSpent_min/3 - 0.5)
+			//iconProgression = Math.round(timeSpent_min * 12 - 0.5)     // fro Debug (display each 5 sec)
+		}
 
-		// Update best score on main task
+		// Update progressBar
 		if (percentageCompletion < mainScore)
 			percentageCompletion = mainScore
-		console.log(iconUnlock, iconVisibility, iconProgression)
 	}
 
 	// Run the test of the program over each unitTests' scenario
 	function testProgram(events, source) {
 		// TODO: put simulation in a thread
+		scenarioScores = []
 		var testScores = []
 		var userTaskScore = 0
 		for (var i=0 ; i<userTask.unitTests.length ; i++) {
-			var scenarioScores = []
 			for (var j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
 				scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
 				console.log(userTask.unitTests[i].scenarios[j].name, scenarioScores[scenarioScores.length-1])
@@ -97,6 +110,7 @@ Rectangle {
 
 		// send scores to scoreBar
 		update_scores(testScores, userTaskScore)
+		writeLogs(false)
 	}
 
 	// Icons corresponding to unitTests (representing progress on each)
