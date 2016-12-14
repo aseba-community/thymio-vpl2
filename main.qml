@@ -46,16 +46,6 @@ ApplicationWindow {
 				contentItem: Image {
 					anchors.centerIn: parent
 					anchors.rightMargin: 12
-					source: "qrc:/thymio-vpl2/icons/ic_menu_white_24px.svg"
-				}
-				visible: !vplEditor.blockEditorVisible
-				onClicked: scoreBoard.open()
-			}
-
-			ToolButton {
-				contentItem: Image {
-					anchors.centerIn: parent
-					anchors.rightMargin: 12
 					source: !thymio.playing ? "qrc:/thymio-vpl2/icons/ic_play_white_48px.svg" : "qrc:/thymio-vpl2/icons/ic_stop_white_48px.svg"
 				}
 				visible: !vplEditor.blockEditorVisible
@@ -65,16 +55,28 @@ ApplicationWindow {
 		}
 	}
 
+	ScoreBar {
+		id: scoreBar
+		anchors.top: parent.top
+		anchors.horizontalCenter: parent.horizontalCenter
+		height: parent.width >= 500 ? 60 : 120
+		width: parent.width
+		color: Material.primary
+	}
+
 	Editor {
 		id: vplEditor
-		anchors.fill: parent
+		anchors.top: scoreBar.visible ? scoreBar.bottom : parent.top
+		anchors.horizontalCenter: parent.horizontalCenter
+		height: scoreBar.visible ? parent.height - scoreBar.height : parent.height
+		width: parent.width
 
 		Text {
 			text: "developer preview pre-alpha, no feature or design is final"
 			anchors.left: parent.left
 			anchors.leftMargin: 106
-			anchors.top: parent.top
-			anchors.topMargin: 10
+			anchors.bottom: parent.bottom
+			anchors.bottomMargin: 10
 			color: Material.primaryTextColor
 		}
 	}
@@ -117,6 +119,11 @@ ApplicationWindow {
 		ListElement { title: qsTr("switch editor mode"); callback: "switchEditorMode"; whiteIcon: ""; blackIcon: ""; }
 		function switchEditorMode() {
 			vplEditor.switchMode();
+		}
+
+		ListElement { title: qsTr("toggle score bar"); callback: "toggleScoreBar"; whiteIcon: ""; blackIcon: ""; }
+		function toggleScoreBar() {
+			scoreBar.active = !scoreBar.active;
 		}
 
 		//ListElement { title: qsTr("about"); source: "About.qml" ; icon: "qrc:/thymio-vpl2/icons/ic_info_white_24px.svg" }
@@ -171,10 +178,6 @@ ApplicationWindow {
 	LoadSaveDialog {
 		id: saveProgramDialog
 		vplEditor: vplEditor
-	}
-
-	Scoreboard {
-		id: scoreBoard
 	}
 
 	Aseba {

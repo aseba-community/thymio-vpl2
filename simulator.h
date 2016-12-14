@@ -36,7 +36,7 @@ class Simulator: public QObject {
 
 public slots:
 	// Run the simulation
-	double testProgram(QVariant userTask, QVariantMap newEvents, QString newSource);
+	double testProgram(QVariant newScenario, QVariantMap newEvents, QString newSource);
 	//QString testProgram(QVariant newScenario);
     // Update program information in the simulator (events and source)
 	void setProgram(QVariantMap newEvents, QString newSource);

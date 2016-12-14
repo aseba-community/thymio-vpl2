@@ -3,11 +3,11 @@ import QtQuick 2.0
 QtObject {
     id: userTask
     property string name: "labyrinth"
-
+	property string image: "qrc:/thymio-vpl2/images/userhints/userTask.png"
     property list<UnitTest> unitTests: [
 		UnitTest {
             name: "test_emptyMap"
-			image: "qrc:/thymio-vpl2/images/userhints/log avant 2.png"
+			image: "qrc:/thymio-vpl2/images/userhints/emptyMap.png"
             combinationRule: "max"
 
 			scoreMax: 0.5
@@ -22,7 +22,6 @@ QtObject {
                     walls: []
 					evaluationMetric: "distance"
                 }
-
             ]
         },
 
@@ -38,11 +37,11 @@ QtObject {
                 Scenario {
                     name: "alignedCorridor"
                     simTime: 5
-                    initialPosition: Qt.vector3d(30,10,2.54)
+					initialPosition: Qt.vector3d(30,10,1.57)
                     worldSize: Qt.vector2d(60,200)
                     walls: [
-                        Wall {position: Qt.vector2d(20,100); size: Qt.vector3d(2,200,10)},
-                        Wall {position: Qt.vector2d(40,100); size: Qt.vector3d(2,200,10)}
+						Wall {position: Qt.vector2d(20,100); size: Qt.vector3d(2,200,10)},
+						Wall {position: Qt.vector2d(40,100); size: Qt.vector3d(2,200,10)}
                     ]
                     evaluationMetric: "tiles"
 					tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(30,70),Qt.vector2d(30,90),Qt.vector2d(30,110)]
@@ -54,8 +53,8 @@ QtObject {
                     initialPosition: Qt.vector3d(30,10,1.6)
                     worldSize: Qt.vector2d(60,200)
                     walls: [
-                        Wall {position: Qt.vector2d(20,100); size: Qt.vector3d(2,200,10)},
-                        Wall {position: Qt.vector2d(40,100); size: Qt.vector3d(2,200,10)}
+						Wall {position: Qt.vector2d(20,100); size: Qt.vector3d(2,200,10)},
+						Wall {position: Qt.vector2d(40,100); size: Qt.vector3d(2,200,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(30,70),Qt.vector2d(30,90),Qt.vector2d(30,110)]
