@@ -45,6 +45,7 @@ void Simulator::setScenario(QVariant newScenario) {
 	scenario.initialPosition = qvariant_cast<QVector3D>(scenarioObj->property("initialPosition"));
 	scenario.worldSize = qvariant_cast<QVector2D>(scenarioObj->property("worldSize"));
 	scenario.evaluationMetric = qvariant_cast<QString>(scenarioObj->property("evaluationMetric"));
+	scenario.distanceMax = qvariant_cast<double>(scenarioObj->property("distanceMax"));
 
 	// Get tiles from qml, which come as a QJSValue containing a list of QVariant(QVector2D)
 	scenario.tiles.clear();
@@ -236,12 +237,24 @@ double Simulator::compute_score(QVector<QVector3D> positionLog, QVector<QVector<
 			else
 				score = scenario.tileScores.last();
 		}
-		return score / scenario.tileScores.last();
+		if (scenario.tileScores.last() != 0)
+			return score / scenario.tileScores.last();
+		else
+			return 0.0;
 	}
 	else if (scenario.evaluationMetric == "distance") {
-		double score(sqrt(pow(positionLog[positionLog.length()-1].x() - positionLog[0].x(),2) +
-						  pow(positionLog[positionLog.length()-1].y() - positionLog[0].y(),2)));
-		return score / sqrt(pow(scenario.worldSize.x(), 2) + pow(scenario.worldSize.y(), 2));
+		double maxDistance(0.0);
+		for (int i=0 ; i<positionLog.length() ; i++) {
+			double distance(sqrt(pow(positionLog[i].x() - positionLog[0].x(),2) +
+								 pow(positionLog[i].y() - positionLog[0].y(),2)));
+			if (distance > maxDistance) {
+				maxDistance = distance;
+			}
+		}
+		if (scenario.distanceMax != 0.0)
+			return maxDistance / scenario.distanceMax;
+		else
+			return 0.0;
 	}
 	else if (scenario.evaluationMetric == "sensor") {
 		/*

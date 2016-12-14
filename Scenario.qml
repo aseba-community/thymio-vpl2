@@ -16,7 +16,8 @@ QtObject {
     // Metric use to score the program
     // Possible choices: none, tiles, linearity, distance, sensors
     property string evaluationMetric: "none"
-    // If tiles was selected, one need the coordinate of the center of the tiles and the score given for reaching each tile
+	// Diverse information to compute score (depend on the chose metric)
     property var tiles: []
     property var tileScores: []
+	property double distanceMax: 0.0
 }

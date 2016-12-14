@@ -32,6 +32,7 @@ class Simulator: public QObject {
         QString evaluationMetric;
         QVector<QVector2D> tiles;
         QVector<int> tileScores;
+		double distanceMax;
     };
 
 public slots:

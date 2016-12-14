@@ -21,6 +21,7 @@ QtObject {
                     worldSize: Qt.vector2d(200,200)
                     walls: []
 					evaluationMetric: "distance"
+					distanceMax: 80
                 }
             ]
         },
