@@ -126,6 +126,15 @@ Item {
 		});
 	}
 
+	function getProgram() {
+		var code = {
+			mode: sceneLoader.mode,
+			scene: scene.serialize(),
+		};
+		code = JSON.stringify(code);
+		return code
+	}
+
 	function listPrograms() {
 		// List existing programs
 		var rows;

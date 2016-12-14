@@ -3,6 +3,7 @@
 #include "aseba.h"
 #include "simulator.h"
 #include <iostream>
+#include <QFile>
 #include <QDebug>
 
 #include <QJSValue>
@@ -34,6 +35,26 @@ struct SimulatorNodesManager: NodesManager
 		}
 	}
 };
+
+void Simulator::setNewLogFile(QString newFileName) {
+	logFile.setFileName(newFileName);
+	// Check if the file already exists
+	while (logFile.exists()) {
+		static int i = 1;
+		logFile.setFileName(newFileName + "_" + i);
+		i++;
+	}
+}
+
+void Simulator::writeLog(QString logLine) {
+	if (logFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
+		QTextStream logStream(&logFile);
+		logStream << logLine << endl;
+		logFile.close();
+	}
+	else
+		qDebug() << "[Simulator] ERROR: Unable to open logFile";
+}
 
 void Simulator::setScenario(QVariant newScenario) {
 

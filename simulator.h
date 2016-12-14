@@ -8,6 +8,7 @@
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
+#include <QFile>
 
 class Simulator: public QObject {
 	Q_OBJECT
@@ -36,6 +37,9 @@ class Simulator: public QObject {
     };
 
 public slots:
+	// Write a string in a log file
+	void setNewLogFile(QString newFileName);
+	void writeLog(QString logLine);
 	// Run the simulation
 	double testProgram(QVariant newScenario, QVariantMap newEvents, QString newSource);
 	//QString testProgram(QVariant newScenario);
@@ -47,7 +51,8 @@ public slots:
 private:
 	double compute_score(QVector<QVector3D> positionLog, QVector<QVector<double>> sensorLog);
 
-	// TODO: remove variables (so it can be multithreaded)
+	// TODO: remove scenario (so it can be multithreaded)
+	QFile logFile;
 	Program program;
 	Scenario scenario;
 };
