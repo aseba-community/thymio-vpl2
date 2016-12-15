@@ -180,6 +180,14 @@ Item {
 		}
 	}
 
+	function toggleScoreBar() {
+		scoreBar.visible = !scoreBar.visible
+	}
+
+	function testProgram(events, source) {
+		scoreBar.testProgram(events, source)
+	}
+
 	function serializeAdvanced() {
 		var blocksIn = scene.ast.blocks;
 		var blocksOut = [];
@@ -237,6 +245,15 @@ Item {
 		Behavior on anchors.rightMargin { PropertyAnimation {} }
 	}
 
+	ScoreBar {
+		id: scoreBar
+		anchors.top: parent.top
+		anchors.left: eventPane.right
+		anchors.right: actionPane.left
+		height: parent.width >= 500 ? 60 : 120
+		color: Material.primary
+	}
+
 	Rectangle {
 		id: mainContainer
 
@@ -247,7 +264,7 @@ Item {
 		anchors.rightMargin: vplEditor.minimized ? 0 : actionPane.width
 
 		width: foregroundWidth
-		height: parent.height
+		height: scoreBar.visible ? parent.height - scoreBar.height : parent.height
 		//opacity: vplEditor.minimized ? 0.5 : 1.0
 		color: vplEditor.minimized ? "#80200032" : "#ff44285a"
 		scale: vplEditor.minimized ? 0.5 : 1.0

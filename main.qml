@@ -56,21 +56,9 @@ ApplicationWindow {
 		}
 	}
 
-	ScoreBar {
-		id: scoreBar
-		anchors.top: parent.top
-		anchors.horizontalCenter: parent.horizontalCenter
-		height: parent.width >= 500 ? 60 : 120
-		width: parent.width
-		color: Material.primary
-	}
-
 	Editor {
 		id: vplEditor
-		anchors.top: scoreBar.visible ? scoreBar.bottom : parent.top
-		anchors.horizontalCenter: parent.horizontalCenter
-		height: scoreBar.visible ? parent.height - scoreBar.height : parent.height
-		width: parent.width
+		anchors.fill: parent
 
 		Text {
 			text: "developer preview pre-alpha, no feature or design is final"
@@ -124,7 +112,7 @@ ApplicationWindow {
 
 		ListElement { title: qsTr("toggle score bar"); callback: "toggleScoreBar"; whiteIcon: ""; blackIcon: ""; }
 		function toggleScoreBar() {
-			scoreBar.scoreBarVisible = !scoreBar.scoreBarVisible;
+			vplEditor.toggleScoreBar();
 		}
 
 		ListElement { title: "dev: show aesl"; callback: "showAeslSource"; whiteIcon: ""; blackIcon: ""; visible: false; }

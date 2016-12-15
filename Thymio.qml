@@ -25,7 +25,7 @@ Item {
 	onSourceChanged: {
 		setProgram()
 		if (playing)
-			scoreBar.testProgram(events, source)
+			vplEditor.testProgram(events, source)
 	}
 
 	function setVariables() {
