@@ -29,7 +29,7 @@ Rectangle {
 		id: simulator
 	}
 
-	Component.onCompleted: changeUserName.open()
+	Component.onCompleted: { changeUserName.open() }
 	onScoreBarVisibleChanged: {
 		if (scoreBarVisible === true) {
 			changeUserName.open()
@@ -40,7 +40,6 @@ Rectangle {
 		var timeNow = new Date()
 		if (firstLogEntry) {
 			firstLogEntry = false
-			console.log("log file : ", logFileName)
 			simulator.setNewLogFile(logFileName)
 			simulator.writeLog(timeBegin.getTime().toString() + " BEGIN")
 		}
@@ -65,6 +64,8 @@ Rectangle {
 		if (iconProgression < userTask.unitTests.length) {
 			var timeSpent_min = (new Date().getTime() - timeBegin.getTime()) / 60000
 			iconProgression = Math.round(timeSpent_min/2 - 0.5)
+			if (iconProgression > userTask.unitTests.length)
+				iconProgression = userTask.unitTests.length
 			//iconProgression = Math.round(timeSpent_min * 12 - 0.5)     // fro Debug (display each 5 sec)
 		}
 

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QFile>
 #include <QDebug>
-
+#include <QStandardPaths>
 #include <QJSValue>
 #include <QJSValueIterator>
 #include <QQmlListReference>
@@ -37,7 +37,8 @@ struct SimulatorNodesManager: NodesManager
 };
 
 void Simulator::setNewLogFile(QString newFileName) {
-	logFile.setFileName(newFileName);
+	QString basePath = QStandardPaths::standardLocations(QStandardPaths::DownloadLocation)[0];
+	logFile.setFileName(basePath + "/" + newFileName);
 	// Check if the file already exists
 	while (logFile.exists()) {
 		static int i = 1;
@@ -53,7 +54,7 @@ void Simulator::writeLog(QString logLine) {
 		logFile.close();
 	}
 	else
-		qDebug() << "[Simulator] ERROR: Unable to open logFile";
+		qDebug() << "[Simulator] ERROR: Unable to open logFile : " << logFile.fileName();
 }
 
 void Simulator::setScenario(QVariant newScenario) {
