@@ -131,43 +131,43 @@ Rectangle {
 	// Run the test of the program over each unitTests' scenario
 	function testProgram(events, source) {
 		// TODO: put simulation in a thread
-		scenarioScores = []
-		var testScores = []
-		for (var i=0 ; i<userTask.unitTests.length ; i++) {
+		var testScores = [] // scorse of the unitTests
+		scenarioScores = [] // scores of each scenario inside unitTests
+		for(var i=0 ; i<userTask.unitTests.length ; i++) {
+			var unitTestInternalScores = [] // scores of scenario contained in one unitTest
 			for (var j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
-				scenarioScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
-				console.log(userTask.unitTests[i].scenarios[j].name, scenarioScores[scenarioScores.length-1])
+				unitTestInternalScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
 			}
-
+			scenarioScores.push(unitTestInternalScores)
 			// Combinate scenarios' scores to make test's score
 			switch(userTask.unitTests[i].combinationRule) {
 				case "mean":
 					var sum = 0
-					for (j=0 ; j<scenarioScores.length ; j++) {
-						sum += scenarioScores[j]
+					for (j=0 ; j<unitTestInternalScores.length ; j++) {
+						sum += unitTestInternalScores[j]
 					}
-					testScores.push(sum/scenarioScores.length)
+					testScores.push(sum/unitTestInternalScores.length)
 					break;
 				case "max":
 					var max = 0
-					for (j=0 ; j<scenarioScores.length ; j++) {
-						if (scenarioScores[j] > max) {
-							max = scenarioScores[j]
+					for (j=0 ; j<unitTestInternalScores.length ; j++) {
+						if (unitTestInternalScores[j] > max) {
+							max = unitTestInternalScores[j]
 						}
 					}
 					testScores.push(max)
 					break;
 				case "min":
 					var min = 0
-					for (j=0 ; j<scenarioScores.length ; j++) {
-						if (scenarioScores[j] < min) {
-							min = scenarioScores[j]
+					for (j=0 ; j<unitTestInternalScores.length ; j++) {
+						if (unitTestInternalScores[j] < min) {
+							min = unitTestInternalScores[j]
 						}
 					}
 					testScores.push(min)
 					break;
 				default:
-					testScores.push(scenarioScores[0])
+					testScores.push(unitTestInternalScores[0])
 			}
 		}
 
