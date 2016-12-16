@@ -1,4 +1,5 @@
 import QtQuick 2.6
+import QtQuick.Window 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.0
@@ -128,10 +129,7 @@ Item {
 				simulator.writeLog(timeNow.getTime().toString() + " NEXT_LEVEL " + (timeNow.getTime()-timeBegin.getTime()).toString() + " " +
 								   currentLevel + " " + nextTestPopup.experienceEarned + " " + nextTestPopup.timeBonus)
 
-				if (iconFeedback)
-					nextTestPopup.open()
-				else
-					levelTimeBegin = new Date()
+				nextTestPopup.open()
 			}
 		}
 	}
@@ -151,6 +149,7 @@ Item {
 						bestRun = scoreBuffer
 				}
 				unitTestInternalScores.push(bestRun)
+				console.log(unitTestInternalScores)
 			}
 			scenarioScores.push(unitTestInternalScores)
 			// Combinate scenarios' scores to make test's score
@@ -307,6 +306,7 @@ Item {
 		id: nextTestPopup
 		x: (parent.width - width) / 2
 		y: (vplEditor.height - height) / 2
+		width: Screen.width / 2
 		modal: true
 		focus: true
 		closePolicy: Popup.OnEscape | Popup.OnPressOutside
@@ -314,8 +314,9 @@ Item {
 		property int timeBonus: 0
 		property int experienceEarned: 0
 		property string headerText: currentLevel == userTask.levelNumber ? "Bravo!!!" : (timeBonus ? "Niveau Réussi!" : "Prochain Niveau")
-		property string dialogText: timeBonus ? "Félicitations! Tu as finis cette tâche en avance." :
-												"Vous avez maintenant accès au prochain niveau.\nObserve bien les indications en haut de l'écran."
+		property string dialogText: !iconFeedback ? "Tu peux maintenant essayer des situations plus compliquées.\nLes dessins en haut de l'écran les différentes situations que le robot peut rencontrer" :
+									(timeBonus ? "Félicitations! Tu as finis cette étape en avance.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations" :
+												"Tu peux maintenant essayer des situations plus compliquées.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations")
 		ColumnLayout {
 			spacing: 16
 
@@ -325,26 +326,11 @@ Item {
 				font.weight: Font.Medium
 				font.pointSize: 21
 			}
-			/*
-			Rectangle {
-				color: unitTestScores[currentLevel-2] > userTask.unitTests[currentLevel-2].scoreMax ? "green" :
-					  (unitTestScores[currentLevel-2] > userTask.unitTests[currentLevel-2].scoreAverage ? "orange" : "red")
-				width: 50
-				height: 50
-				radius: 25
-				visible: true
-				anchors.horizontalCenter: parent.horizontalCenter
-				Image {
-					anchors.centerIn: parent
-					width: parent.width
-					fillMode: Image.PreserveAspectFit
-					source: currentLevel > 0 ? userTask.unitTests[currentLevel-2].image : ""
-				}
-			}*/
 
 			Text {
 				text: qsTr(nextTestPopup.dialogText)
 				horizontalAlignment: Text.AlignLeft
+				wrapMode: Text.WordWrap
 				font.weight: Font.Medium
 				font.pointSize: 14
 				color: "white"
@@ -354,13 +340,15 @@ Item {
 				horizontalAlignment: Text.AlignLeft
 				font.weight: Font.Medium
 				font.pointSize: 16
+				visible: iconFeedback
 				color: "white"
 			}
 			Text {
 				text: qsTr("(Bonus de Temps : " + nextTestPopup.timeBonus.toString() + ")")
 				horizontalAlignment: Text.AlignLeft
 				//font.weight: Font.Medium
-				font.pointSize: 10
+				font.pointSize: 16
+				visible: iconFeedback
 				color: "white"
 			}
 
