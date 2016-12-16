@@ -66,9 +66,6 @@ Rectangle {
 			for (var i=0 ; i<userTask.unitTests.length ; i++)
 				bestUnitTestScores[i] = Math.max(bestUnitTestScores[i], newScores[i])
 
-		console.log(spentLevelTime, userTask.levelDuration[currentLevel-1], currentLevel)
-		console.log(unitTestScores)
-
 		if (currentLevel <= userTask.levelNumber) {
 
 			// Check if all previous unitTests and current one are completed
@@ -147,7 +144,6 @@ Rectangle {
 				unitTestInternalScores.push(bestRun)
 			}
 			scenarioScores.push(unitTestInternalScores)
-			console.log(unitTestInternalScores)
 			// Combinate scenarios' scores to make test's score
 			switch(userTask.unitTests[i].combinationRule) {
 				case "mean":
@@ -313,7 +309,7 @@ Rectangle {
 		property int experienceEarned: 0
 		property string headerText: currentLevel == userTask.levelNumber ? "Bravo!!!" : (timeBonus ? "Niveau Réussi!" : "Prochain Niveau")
 		property string dialogText: timeBonus ? "Félicitations! Tu as finis cette tâche en avance." :
-												"Il est temps de passer au prochain niveau.\nObserve bien les indications en haut de l'écran."
+												"Vous avez maintenant accès au prochain niveau.\nObserve bien les indications en haut de l'écran."
 		ColumnLayout {
 			spacing: 16
 
