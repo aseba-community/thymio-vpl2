@@ -252,7 +252,7 @@ Item {
 
 	Popup {
 		id: changeUserNamePopup
-		x: (vplEditor.width - width) / 2
+		x: (parent.width - width) / 2
 		y: (vplEditor.height - height) / 2
 		modal: true
 		focus: true
