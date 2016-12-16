@@ -2,6 +2,7 @@
 #define SIMULATOR_H
 
 #include <enki/enki/PhysicalEngine.h>
+#include <aseba/targets/playground/EnkiGlue.h>
 #include <aseba.h>
 
 #include <QVariantMap>

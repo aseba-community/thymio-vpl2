@@ -4,12 +4,17 @@ QtObject {
     id: userTask
     property string name: "labyrinth"
 	property string image: "qrc:/thymio-vpl2/images/userhints/userTask.png"
+
+	property int levelNumber: 4
+	property var unitTestLevel: [1,2,3,3,4]
+	//property var levelDuration: [300,600,300,300]
+	property var levelDuration: [10,10,10,10]
+
     property list<UnitTest> unitTests: [
 		UnitTest {
             name: "test_emptyMap"
 			image: "qrc:/thymio-vpl2/images/userhints/emptyMap.png"
             combinationRule: "max"
-
 			scoreMax: 0.5
 			scoreAverage: 0.1
 
@@ -136,10 +141,10 @@ QtObject {
                     initialPosition: Qt.vector3d(30,30,1.6)
                     worldSize: Qt.vector2d(80,80)
                     walls: [
-                        Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(24,41,10)},
-                        Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(61,2,10)},
-                        Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(41,2,10)}
+						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(0.8,60,10)},
+						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(0.8,40,10)},
+						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,0.8,10)},
+						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,0.8,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(50,50),Qt.vector2d(70,50)]
@@ -163,14 +168,14 @@ QtObject {
 					initialPosition: Qt.vector3d(30,50,-1.57)
 					worldSize: Qt.vector2d(120,100)
 					walls: [
-						Wall {position: Qt.vector2d(60,80); size: Qt.vector3d(81,2,10)},
-						Wall {position: Qt.vector2d(60,20); size: Qt.vector3d(81,2,10)},
-						Wall {position: Qt.vector2d(20,50); size: Qt.vector3d(2,61,10)},
-						Wall {position: Qt.vector2d(100,50); size: Qt.vector3d(2,61,10)},
-						Wall {position: Qt.vector2d(40,60); size: Qt.vector3d(2,41,10)},
-						Wall {position: Qt.vector2d(50,40); size: Qt.vector3d(21,2,10)},
-						Wall {position: Qt.vector2d(70,60); size: Qt.vector3d(21,2,10)},
-						Wall {position: Qt.vector2d(80,40); size: Qt.vector3d(2,41,10)}
+						Wall {position: Qt.vector2d(60,80); size: Qt.vector3d(80,0.8,10)},
+						Wall {position: Qt.vector2d(60,20); size: Qt.vector3d(80,0.8,10)},
+						Wall {position: Qt.vector2d(20,50); size: Qt.vector3d(0.8,60,10)},
+						Wall {position: Qt.vector2d(100,50); size: Qt.vector3d(0.8,60,10)},
+						Wall {position: Qt.vector2d(40,60); size: Qt.vector3d(0.8,40,10)},
+						Wall {position: Qt.vector2d(50,40); size: Qt.vector3d(20,0.8,10)},
+						Wall {position: Qt.vector2d(70,60); size: Qt.vector3d(20,0.8,10)},
+						Wall {position: Qt.vector2d(80,40); size: Qt.vector3d(0.8,40,10)}
 					]
 					evaluationMetric: "tiles"
 					tiles: [Qt.vector2d(30,70),Qt.vector2d(30,50),Qt.vector2d(30,30),Qt.vector2d(50,30),Qt.vector2d(70,30),Qt.vector2d(70,50),

@@ -129,6 +129,7 @@ double Simulator::testProgram(QVariant newScenario, QVariantMap newEvents, QStri
 
 	// Create world, robot and nodes manager
 	World world(scenario.worldSize.x(), scenario.worldSize.y());
+	Enki::getWorld = [&]() { return &world; };
 
 	for (int i=0 ; i<scenario.walls.count() ; i++){
 		world.addObject(new Enki::PhysicalObject(scenario.walls[i]));
