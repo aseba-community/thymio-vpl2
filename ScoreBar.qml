@@ -49,9 +49,8 @@ Rectangle {
 		}
 		// Acquire vpl2 and aesl code
 		var vplCode = vplEditor.getProgram()
-		var aeslCode = aeslSourceDialog.prettyPrintGeneratedAesl(vplEditor.compiler.script)
 		simulator.writeLog(timeNow.getTime().toString() + " RUN " + (timeNow.getTime()-timeBegin.getTime()).toString() + " " +
-						   scenarioScores.toString() + " " + bestUnitTestScores.toString() + " " + experience + "\n" + vplCode + "\n" + aeslCode)
+						   scenarioScores.toString() + " " + bestUnitTestScores.toString() + " " + experience + "\n\t" + vplCode)
 	}
 
 	// Update scoreBar information
