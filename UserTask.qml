@@ -7,21 +7,21 @@ QtObject {
 
 	property int levelNumber: 4
 	property var unitTestLevel: [1,2,3,3,4]
-	//property var levelDuration: [300,600,300,300]
-	property var levelDuration: [10,10,10,10]
+	property var levelDuration: [300,600,300,300]
+	//property var levelDuration: [10,10,10,10]    // for debug purpose
 
     property list<UnitTest> unitTests: [
 		UnitTest {
             name: "test_emptyMap"
 			image: "qrc:/thymio-vpl2/images/userhints/emptyMap.png"
             combinationRule: "max"
-			scoreMax: 0.5
+			scoreMax: 0.3
 			scoreAverage: 0.1
 
             scenarios: [
                 Scenario {
                     name: "emptyMap"
-                    simTime: 10
+					simTime: 5
                     initialPosition: Qt.vector3d(100,100,0.0)
                     worldSize: Qt.vector2d(200,200)
                     walls: []
@@ -36,7 +36,7 @@ QtObject {
 			image: "qrc:/thymio-vpl2/images/userhints/corridor.png"
             combinationRule: "mean"
 
-			scoreMax: 0.5
+			scoreMax: 0.3
 			scoreAverage: 0.1
 
             scenarios: [
@@ -74,20 +74,20 @@ QtObject {
 			image: "qrc:/thymio-vpl2/images/userhints/cornerLeft.png"
             combinationRule: "mean"
 
-			scoreMax: 0.66
-			scoreAverage: 0.33
+			scoreMax: 0.6
+			scoreAverage: 0.3
 
             scenarios: [
                 Scenario {
                     name: "simpleLeftCorner"
-                    simTime: 4
+					simTime: 7
                     initialPosition: Qt.vector3d(50,50,3.17)
                     worldSize: Qt.vector2d(80,80)
                     walls: [
-                        Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(24,41,10)},
-                        Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(61,2,10)},
-                        Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(41,2,10)}
+						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,60,10)},
+						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(2,40,10)},
+						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,2,10)},
+						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,2,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(70,50),Qt.vector2d(50,50),Qt.vector2d(30,50),Qt.vector2d(30,30),Qt.vector2d(30,10)]
@@ -95,14 +95,14 @@ QtObject {
                 },
                 Scenario {
                     name: "hardLeftCorner"
-                    simTime: 4
+					simTime: 7
                     initialPosition: Qt.vector3d(50,50,3.11)
                     worldSize: Qt.vector2d(80,80)
                     walls: [
-                        Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(24,41,10)},
-                        Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(61,2,10)},
-                        Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(41,2,10)}
+						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,60,10)},
+						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(2,40,10)},
+						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,2,10)},
+						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,2,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(70,50),Qt.vector2d(50,50),Qt.vector2d(30,50),Qt.vector2d(30,30),Qt.vector2d(30,10)]
@@ -116,20 +116,20 @@ QtObject {
 			image: "qrc:/thymio-vpl2/images/userhints/cornerRight.png"
             combinationRule: "mean"
 
-			scoreMax: 0.66
-			scoreAverage: 0.33
+			scoreMax: 0.6
+			scoreAverage: 0.3
 
             scenarios: [
                 Scenario {
                     name: "simpleRightCorner"
-                    simTime: 4
+					simTime: 7
                     initialPosition: Qt.vector3d(30,30,1.54)
                     worldSize: Qt.vector2d(80,80)
                     walls: [
-                        Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,61,10)},
-                        Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(24,41,10)},
-                        Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(61,2,10)},
-                        Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(41,2,10)}
+						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,60,10)},
+						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(2,40,10)},
+						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,2,10)},
+						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,2,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(50,50),Qt.vector2d(70,50)]
@@ -137,14 +137,14 @@ QtObject {
                 },
                 Scenario {
                     name: "hardRightCorner"
-                    simTime: 4
+					simTime: 7
                     initialPosition: Qt.vector3d(30,30,1.6)
                     worldSize: Qt.vector2d(80,80)
                     walls: [
-						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(0.8,60,10)},
-						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(0.8,40,10)},
-						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,0.8,10)},
-						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,0.8,10)}
+						Wall {position: Qt.vector2d(20,30); size: Qt.vector3d(2,60,10)},
+						Wall {position: Qt.vector2d(40,20); size: Qt.vector3d(2,40,10)},
+						Wall {position: Qt.vector2d(50,60); size: Qt.vector3d(60,2,10)},
+						Wall {position: Qt.vector2d(60,40); size: Qt.vector3d(40,2,10)}
                     ]
                     evaluationMetric: "tiles"
                     tiles: [Qt.vector2d(30,10),Qt.vector2d(30,30),Qt.vector2d(30,50),Qt.vector2d(50,50),Qt.vector2d(70,50)]
