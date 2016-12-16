@@ -132,7 +132,7 @@ Item {
 							var block = blocks[index];
 							block.isError = true;
 						});
-						throw "Infinite loop";
+						throw qsTr("Infinite loop");
 					}
 					events.push(index);
 					visitTails(node, visitEvents);
@@ -150,7 +150,7 @@ Item {
 							var block = blocks[index];
 							block.isError = true;
 						});
-						throw "Infinite loop";
+						throw qsTr("Infinite loop");
 					}
 					states.push(index);
 					visitTails(node, visitStates);
@@ -183,7 +183,7 @@ Item {
 					}
 				});
 				if (unreachable !== 0) {
-					throw "Unreachable blocks";
+					throw qsTr("Unreachable blocks");
 				}
 			})();
 
@@ -498,8 +498,8 @@ Item {
 	}
 
 	function execReset(playing) {
-		for (var i = 0; i < blocks.length; ++i) {
-			var block = blocks[i];
+		for (var i = 0; i < ast.blocks.length; ++i) {
+			var block = ast.blocks[i];
 			if (playing) {
 				var isStarting = block.isStarting;
 				var isState = nodes[i].compiled.condition === undefined;
