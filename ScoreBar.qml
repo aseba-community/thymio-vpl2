@@ -193,7 +193,7 @@ Item {
 		anchors.horizontalCenter: parent.horizontalCenter
 		width: parent.width - 20
 
-		spacing: unitTestsItem.width + scoreItem.width < width ? width - (unitTestsItem.width + scoreItem.width) : 0
+		spacing: unitTestsItem.width + scoreItem.width + 10 < width ? width - (unitTestsItem.width + scoreItem.width) : 10
 
 		Row {
 			id: unitTestsItem
