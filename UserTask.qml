@@ -42,7 +42,7 @@ QtObject {
             scenarios: [
                 Scenario {
                     name: "alignedCorridor"
-                    simTime: 5
+					simTime: 5
 					initialPosition: Qt.vector3d(30,10,1.57)
                     worldSize: Qt.vector2d(60,200)
                     walls: [
