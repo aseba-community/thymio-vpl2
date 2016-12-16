@@ -306,17 +306,17 @@ Item {
 		id: nextTestPopup
 		x: (parent.width - width) / 2
 		y: (vplEditor.height - height) / 2
-		width: Screen.width / 2
+		//width: Screen.width / 2
 		modal: true
 		focus: true
 		closePolicy: Popup.OnEscape | Popup.OnPressOutside
 
 		property int timeBonus: 0
 		property int experienceEarned: 0
-		property string headerText: currentLevel == userTask.levelNumber ? "Bravo!!!" : (timeBonus ? "Niveau Réussi!" : "Prochain Niveau")
-		property string dialogText: !iconFeedback ? "Tu peux maintenant essayer des situations plus compliquées.\nLes dessins en haut de l'écran les différentes situations que le robot peut rencontrer" :
-									(timeBonus ? "Félicitations! Tu as finis cette étape en avance.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations" :
-												"Tu peux maintenant essayer des situations plus compliquées.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations")
+		property string headerText: currentLevel == userTask.levelNumber ? "Bravo !!!" : (timeBonus ? "Niveau Réussi !" : "Prochain Niveau")
+		property string dialogText: !iconFeedback ? "Tu peux maintenant essayer des situations plus compliquées.\nLes dessins en haut de l'écran montrent les différentes situations que le robot peut rencontrer." :
+									(timeBonus ? "Félicitations ! Tu as finis cette étape en avance.\nTu peux maintenant essayer des situations plus compliquées.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations." :
+												"Tu peux maintenant essayer des situations plus compliquées.\nLes dessins colorés en haut de l'écran t'indiquent si ton robot\nsait quoi faire dans les différentes situations.")
 		ColumnLayout {
 			spacing: 16
 
@@ -330,26 +330,38 @@ Item {
 			Text {
 				text: qsTr(nextTestPopup.dialogText)
 				horizontalAlignment: Text.AlignLeft
-				wrapMode: Text.WordWrap
+				//wrapMode: Text.WordWrap
 				font.weight: Font.Medium
 				font.pointSize: 14
 				color: "white"
 			}
 			Text {
-				text: qsTr("Score + " + (nextTestPopup.experienceEarned + nextTestPopup.timeBonus).toString())
+				property int score: visible ? nextTestPopup.experienceEarned + nextTestPopup.timeBonus : 0
+				Behavior on score { PropertyAnimation { duration: 3000 } }
+				text: qsTr("Score +%1").arg(score)
 				horizontalAlignment: Text.AlignLeft
-				font.weight: Font.Medium
-				font.pointSize: 16
+				font.weight: Font.Bold
+				font.pointSize: 14
 				visible: iconFeedback
-				color: "white"
+				color: "yellow"
 			}
 			Text {
-				text: qsTr("(Bonus de Temps : " + nextTestPopup.timeBonus.toString() + ")")
+				property int xp: visible ? nextTestPopup.experienceEarned : 0
+				Behavior on xp { PropertyAnimation { duration: 3000 } }
+				text: qsTr("Expérience +%1").arg(xp)
 				horizontalAlignment: Text.AlignLeft
-				//font.weight: Font.Medium
-				font.pointSize: 16
+				font.pointSize: 14
 				visible: iconFeedback
-				color: "white"
+				color: "khaki"
+			}
+			Text {
+				property int bonus: visible ? nextTestPopup.timeBonus : 0
+				Behavior on bonus { PropertyAnimation { duration: 3000 } }
+				text: qsTr("Bonus de Temps +%1").arg(bonus)
+				horizontalAlignment: Text.AlignLeft
+				font.pointSize: 14
+				visible: iconFeedback
+				color: "khaki"
 			}
 
 			Button {
