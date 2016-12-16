@@ -1,9 +1,10 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.0
 import Simulator 1.0
 
-Rectangle {
+Item {
 	visible: scoreBarVisible
 
 	property bool scoreBarVisible: true
@@ -23,6 +24,14 @@ Rectangle {
 	property var levelTimeBegin: timeBegin
 	// Global score (obtained by performing good scores at unitTest and finishing tests before timeOut)
 	property int experience: 0
+
+	height: flow.height + 20
+
+	Rectangle {
+		anchors.fill: parent
+		color: Material.primary;
+		opacity: 0.5
+	}
 
 	// TODO: use a loader for userTask
 	UserTask {
@@ -179,45 +188,15 @@ Rectangle {
 
 	// Icons corresponding to unitTests (representing progress on each)
 	Flow {
+		id: flow
 		anchors.verticalCenter: parent.verticalCenter
 		anchors.horizontalCenter: parent.horizontalCenter
-		height: parent.height - 10
 		width: parent.width - 20
 
-		layoutDirection: "RightToLeft"
-		spacing: parent.width >= 500 ? parent.width/2 - 285 : 95
-		Row {
-			spacing: 5
-			Rectangle {
-				anchors.verticalCenter: parent.verticalCenter
-				width: 155
-				height: 50
-				color: "transparent"
-				Text {
-					anchors.centerIn: parent
-					text: "SCORE : " + experience.toString()
-					font.pixelSize: 10
-					font.weight: Font.Medium
-					color: "white"
-					horizontalAlignment: Text.AlignRight
-					visible: iconFeedback
-				}
-			}
-			Rectangle {
-				anchors.verticalCenter: parent.verticalCenter
-				width: 60
-				height: 50
-				color: "lightgrey"
-				Image {
-					anchors.centerIn: parent
-					width: parent.width
-					fillMode: Image.PreserveAspectFit
-					source: userTask.image
-				}
-			}
-		}
+		spacing: unitTestsItem.width + scoreItem.width < width ? width - (unitTestsItem.width + scoreItem.width) : 0
 
 		Row {
+			id: unitTestsItem
 			spacing: 5
 			Repeater {
 				model: userTask.unitTests.length
@@ -242,6 +221,33 @@ Rectangle {
 				}
 			}
 		}
+
+		Row {
+			id: scoreItem
+			spacing: 15
+			Text {
+				anchors.verticalCenter: parent.verticalCenter
+				text: qsTr("SCORE: %1").arg(experience.toString())
+				font.pixelSize: 14
+				font.weight: Font.Medium
+				color: "white"
+				visible: iconFeedback
+			}
+			Rectangle {
+				anchors.verticalCenter: parent.verticalCenter
+				width: 60
+				height: 50
+				color: "lightgrey"
+				Image {
+					anchors.centerIn: parent
+					width: parent.width
+					fillMode: Image.PreserveAspectFit
+					source: userTask.image
+				}
+			}
+		}
+
+
 	}
 
 	Popup {
@@ -294,7 +300,7 @@ Rectangle {
 
 	Popup {
 		id: nextTestPopup
-		x: (vplEditor.width - width) / 2
+		x: (parent.width - width) / 2
 		y: (vplEditor.height - height) / 2
 		modal: true
 		focus: true

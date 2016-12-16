@@ -245,15 +245,6 @@ Item {
 		Behavior on anchors.rightMargin { PropertyAnimation {} }
 	}
 
-	ScoreBar {
-		id: scoreBar
-		anchors.top: parent.top
-		anchors.left: eventPane.right
-		anchors.right: actionPane.left
-		height: parent.width >= 500 ? 60 : 120
-		color: Material.primary
-	}
-
 	Rectangle {
 		id: mainContainer
 
@@ -366,5 +357,14 @@ Item {
 		BlockEditor {
 			id: blockEditor
 		}
+	}
+
+	ScoreBar {
+		id: scoreBar
+		anchors.top: parent.top
+		anchors.left: parent.left
+		anchors.leftMargin: eventPane.width
+		anchors.right: parent.right
+		anchors.rightMargin: actionPane.width
 	}
 }
