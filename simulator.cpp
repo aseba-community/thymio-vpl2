@@ -266,6 +266,8 @@ double Simulator::compute_score(QVector<QVector3D> positionLog, QVector<QVector<
 			return 0.0;
 	}
 	else if (scenario.evaluationMetric == "distance") {
+		// Score based on distance travelled
+		double distanceScore(0);
 		double maxDistance(0.0);
 		for (int i=0 ; i<positionLog.length() ; i++) {
 			double distance(sqrt(pow(positionLog[i].x() - positionLog[0].x(),2) +
@@ -275,9 +277,26 @@ double Simulator::compute_score(QVector<QVector3D> positionLog, QVector<QVector<
 			}
 		}
 		if (scenario.distanceMax != 0.0)
-			return maxDistance / scenario.distanceMax;
+			distanceScore = maxDistance / scenario.distanceMax;
 		else
+			distanceScore = 0.0;
+
+		// Check if robot move backward
+		bool moveBackward(false);
+		if (positionLog[positionLog.length()-1].x() - positionLog[0].x() < 0)
+			moveBackward = true;
+
+		// Score base on linearity
+		double meanAbsAngle(0);
+		for (int i=0 ; i<positionLog.length() ; i++)
+			meanAbsAngle += abs(positionLog[i].z());
+
+		double linearityScore = 1 - meanAbsAngle/positionLog.length();
+
+		if (linearityScore <= 0 || moveBackward)
 			return 0.0;
+		else
+			return linearityScore * distanceScore;
 	}
 	else if (scenario.evaluationMetric == "sensor") {
 		/*
