@@ -3,6 +3,7 @@ import ".."
 
 BlockDefinition {
 	type: "event"
+	advanced: true
 
 	defaultParams: null
 

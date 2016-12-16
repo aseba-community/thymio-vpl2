@@ -4,6 +4,7 @@ import "widgets"
 
 BlockDefinition {
 	type: "action"
+	advanced: true
 
 	defaultParams: "stop"
 

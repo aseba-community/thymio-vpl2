@@ -10,10 +10,8 @@ QtObject {
     // Possible choices: none, mean, max, min
     property string combinationRule: "none"
 
-	// Score threshold for "goal reached"
+	// Score threshold for "goal reached" [0-1]
 	property double scoreMax: 0.8
-	// Score threshold for "average performance"
+	// Score threshold for "average performance" [0-1]
 	property double scoreAverage: 0.4
-	// Experience needed to make the icon appear in the scoreBar
-	property double experienceNeeded: 0.0
 }
