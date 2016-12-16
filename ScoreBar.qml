@@ -14,6 +14,7 @@ Item {
 	property bool firstLogEntry: true
 	property var timeBegin: new Date()
 
+	property int runNumberPerScenario: 5
 	property var unitTestScores: []
 	property var scenarioScores: []
 	property var bestUnitTestScores: []
@@ -74,7 +75,7 @@ Item {
 			for (var i=0 ; i<userTask.unitTests.length ; i++)
 				bestUnitTestScores[i] = Math.max(bestUnitTestScores[i], newScores[i])
 
-		if (currentLevel < userTask.levelNumber) {
+		if (currentLevel <= userTask.levelNumber) {
 
 			// Check if all previous unitTests and current one are completed
 			var unitTestTimeOut = false
@@ -91,8 +92,6 @@ Item {
 			else
 				unitTestCompleted = false
 
-			console.log(spentLevelTime, userTask.levelDuration[currentLevel-1], currentLevel)
-			console.log(unitTestScores)
 			// Check timeout to pass to next unitTest
 			if (spentLevelTime > userTask.levelDuration[currentLevel-1]) {
 				unitTestCompleted = false
@@ -145,7 +144,13 @@ Item {
 		for(var i=0 ; i<userTask.unitTests.length ; i++) {
 			var unitTestInternalScores = [] // scores of scenario contained in one unitTest
 			for (var j=0 ; j<userTask.unitTests[i].scenarios.length ; j++) {
-				unitTestInternalScores.push(simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source))
+				var bestRun = 0
+				for (var k=0 ; k<runNumberPerScenario ; k++) {
+					var scoreBuffer = simulator.testProgram(userTask.unitTests[i].scenarios[j], events, source)
+					if (scoreBuffer > bestRun)
+						bestRun = scoreBuffer
+				}
+				unitTestInternalScores.push(bestRun)
 			}
 			scenarioScores.push(unitTestInternalScores)
 			// Combinate scenarios' scores to make test's score
@@ -308,9 +313,9 @@ Item {
 
 		property int timeBonus: 0
 		property int experienceEarned: 0
-		property string headerText: timeBonus ? "Niveau Réussi!" : "Prochain Niveau"
+		property string headerText: currentLevel == userTask.levelNumber ? "Bravo!!!" : (timeBonus ? "Niveau Réussi!" : "Prochain Niveau")
 		property string dialogText: timeBonus ? "Félicitations! Tu as finis cette tâche en avance." :
-												"Il est temps de passer au prochain niveau.\nObserve bien les indications en haut de l'écran."
+												"Vous avez maintenant accès au prochain niveau.\nObserve bien les indications en haut de l'écran."
 		ColumnLayout {
 			spacing: 16
 
