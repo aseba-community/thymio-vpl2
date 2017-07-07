@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import Aseba 1.0
+import Simulator 1.0
 
 Item {
 	property var variables: ({})
@@ -14,6 +15,10 @@ Item {
 				return node;
 			}
 		}
+	}
+
+	Simulator {
+		id: simulator
 	}
 
 	onNodeChanged: {
@@ -46,6 +51,8 @@ Item {
 	}
 
 	function setProgram() {
+		// TODO: put simulation in a thread
+		simulator.setProgram(events, source);
 		if (node) {
 			error = node.setProgram(events, source);
 		}
