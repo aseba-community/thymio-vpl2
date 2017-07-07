@@ -36,6 +36,9 @@ ASEBA_SOURCES = \
 	$$PWD/aseba/targets/playground/Thymio2-natives.cpp \
 	$$PWD/aseba/targets/playground/Thymio2-descriptions.c
 ASEBA_DEFINES =
+macx {
+	ASEBA_DEFINES += DISABLE_WEAK_CALLBACKS
+}
 ASEBA_LIBS =
 win32 {
 	ASEBA_SOURCES += $$PWD/dashel/dashel/dashel-win32.cpp
