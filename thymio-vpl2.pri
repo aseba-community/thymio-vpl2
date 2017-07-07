@@ -68,7 +68,7 @@ ASEBA_INCLUDE = $$PWD/dashel $$PWD/enki $$PWD
 
 QMAKE_CXXFLAGS += $$ASEBA_CXXFLAGS
 DEFINES += $$ASEBA_DEFINES
-CONFIG += c++11 object_parallel_to_source
+CONFIG += c++14 object_parallel_to_source
 HEADERS += $$PWD/aseba.h \
 	$$PWD/simulator.h
 SOURCES += \
