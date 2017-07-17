@@ -29,6 +29,7 @@ Item {
 		"ProxGroundEventBlock",
 		"TapEventBlock",
 		"ClapEventBlock",
+		"StateEventBlock",
 		"TimerEventBlock",
 		"MotorSimpleActionBlock",
 		"MotorActionBlock",
@@ -36,7 +37,8 @@ Item {
 		"PaletteBottomColorActionBlock",
 		"TopColorActionBlock",
 		"BottomColorActionBlock",
-		"MusicScoreBlock"
+		"MusicScoreBlock",
+		"StateActionBlock"
 	].map(function(name) {
 		var url = "blocks/" + name + ".qml";
 		var component = Qt.createComponent(url);

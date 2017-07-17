@@ -104,6 +104,8 @@
         <file>blocks/MusicScoreBlock.qml</file>
         <file>blocks/NopActionBlock.qml</file>
 		<file>blocks/ImageStateActionBlock.qml</file>
+		<file>blocks/StateActionBlock.qml</file>
+		<file>blocks/StateEventBlock.qml</file>
         <file>blocks/images/nop.svg</file>
         <file>blocks/images/stop.svg</file>
         <file>blocks/images/clap.svg</file>
@@ -150,6 +152,7 @@
         <file>blocks/widgets/PushButton.qml</file>
         <file>blocks/widgets/MotorSliders.qml</file>
         <file>blocks/widgets/MusicScoreEditor.qml</file>
+		<file>blocks/widgets/StateEditor.qml</file>
         <file>blocks/widgets/images/triangularButtonOff.svg</file>
         <file>blocks/widgets/images/triangularButtonOn.svg</file>
         <file>blocks/widgets/images/circularButtonOff.svg</file>
