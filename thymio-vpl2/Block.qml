@@ -339,5 +339,13 @@ DropArea {
 			blockEditor.openBlock(block, block.definition, block.params);
 		}
 	}
+
+	states: State {
+		when: dragArea.drag.active
+		ParentChange {
+			target: block
+			parent: scene
+		}
+	}
 }
 
